@@ -9,8 +9,8 @@ must-haves:
 	- at least one variant of BKT
 		- e.g., BKT + contextual guess and slip
 - a cognitive gaming detector?
+- predictive stability
   
 also starring other recent highlights from the EDM literature, such as: 
-- predictive stability(?)
-	- at least one detector of a student's affective state
- 	 - ...
+- at least one detector of a student's affective state
+ - ...
