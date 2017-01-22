@@ -8,17 +8,20 @@
 		- Change-based canonicalization
 			- 
 			- [insert image of diff visual]
+			
 	- In-development canonicalization schemes include:
 		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
 			- Example categories include: ... , ... , ...
 		- Inferred misconceptions (verbal category descriptions, which DO infer underlying misconceptions)
 			- Example categories include: ... , ... , ...
+			
 	- Don't like any of the above canonicalization schemes? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
 	
 - **help-seeking models**
 	- Current help-seeking models include
 		- ...
 		- ...
+		
 	- In-development help-seeking models include
 
 - **current-step error count**
