@@ -12,7 +12,14 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 [FWIW: the EDM workshop proposal deadline is **February 21st, 2017**]
 
 **Current examples:**
-- **error categorizer:** keeps a count of student errors, categorized under a particular canonicalization scheme
+- **error categorizer:** 
+	- Description: keeps a count of student errors, categorized under a particular canonicalization scheme
+	- Outputs: mapping from observed student error categories to
+		- running, per-student count of observations
+		- raw examples (i.e., non-canonicalized)
+	- Potential extensions: 
+		- Recency (i.e., decay function)
+		- associate every update from an **error categorizer** with a reference to the particular problem instance (I believe this is already included on TutorShop's end)
 	- Current canonicalization schemes include:
 		- Simple canonicalization: line-to-line transition representation
 			- **Example 1**
