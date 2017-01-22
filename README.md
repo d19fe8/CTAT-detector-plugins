@@ -1,16 +1,32 @@
 # CTAT-detector-plugins
 
+Current examples:
+- error categorizer: keeps a count of student errors, categorized under a particular canonicalization scheme
+	- Current canonicalization schemes include:
+		- Simple canonicalization
+		- Change-based canonicalization
+	- In-development canonicalization schemes include:
+		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
+		- Inferred misconceptions (verbal category descriptions, which DO infer underlying misconceptions)
+	- Don't like any of the above canonicalization schemes? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
+	
+- help-seeking models
+	- Current help-seeking models include
+		- ...
+		- ...
+	- In-development help-seeking models include
 
-must-haves:
-- "the" Help Model
-	- at least one variant of the Help Model
-		- e.g., ...
+- current attempt count
+
+- stagnation
+
+
+
+In-development:
 - BKT
 	- at least one variant of BKT and at least one BKT-driven detector
 		- predictive stability
 		- possibly: BKT + contextual guess and slip --> Arroyo et al., carelessness detector
-- a cognitive gaming detector?
+- a cognitive gaming detector
   
-also starring other recent highlights from the EDM literature, such as: 
-- at least one detector of a student's affective state
- - ...
+- at least one detector of a student's affective state (boredom detector tends to have higher accuracy than other affect detectors)
