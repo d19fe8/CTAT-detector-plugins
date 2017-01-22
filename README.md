@@ -1,6 +1,13 @@
 # CTAT-detector-plugins
 
-Coming soon: [link to documentation and resources for extended CTAT tools: build your own detectors]
+**Coming soon:** 
+[link to documentation and resources for extended CTAT tools: build your own detectors]
+
+**Coming at some point... perhaps?**
+Workshop (or similar event) to researcher-source CTAT detectors (and cool applications of detectors)
+^ Similar to the LearnSphere workshop last year
+[EDM folk, in particular: "You may find that skills you've developed for writing **offline analyses of log data** translate quite well to writing **online detectors** for use with CTAT tutors and TutorShop"]
+[FWIW: the EDM workshop proposal deadline is **February 21st, 2017**]
 
 **Current examples:**
 - **error categorizer:** keeps a count of student errors, categorized under a particular canonicalization scheme
