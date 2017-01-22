@@ -6,12 +6,28 @@ Coming soon: [link to documentation and resources for extended CTAT tools: build
 - **error categorizer:** keeps a count of student errors, categorized under a particular canonicalization scheme
 	- Current canonicalization schemes include:
 		- Simple canonicalization: line-to-line transition representation
-			- 
+			- **Example 1**
+				- input:  
+				- output:
+			- **Example 2**
+				- input:  
+				- output:
+			- **Example 3**
+				- input:  
+				- output:
 			
 		- Simple canonicalization: track changes
 			- [insert image of diff visual]
-			-- **Example I/O:**
-				- 
+			
+			- **Example 1**
+				- input:  
+				- output:
+			- **Example 2**
+				- input:  
+				- output:
+			- **Example 3**
+				- input:  
+				- output:
 			
 		- Change-based canonicalization: an extra layer over "track changes", which shows **only what changes between two lines in Lynnette** (and thus produces **fewer** categories, more focused on abstract **transformations**)
 			- **Example 1**
@@ -26,9 +42,25 @@ Coming soon: [link to documentation and resources for extended CTAT tools: build
 			
 	- In-development canonicalization schemes include:
 		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
-			- Example categories include: ... , ... , ...
+			- **Example 1**
+				- input:  
+				- output:
+			- **Example 2**
+				- input:  
+				- output:
+			- **Example 3**
+				- input:  
+				- output:
 		- Inferred misconceptions (verbal category descriptions, which DO infer underlying misconceptions)
-			- Example categories include: ... , ... , ...
+			- **Example 1**
+				- input:  
+				- output:
+			- **Example 2**
+				- input:  
+				- output:
+			- **Example 3**
+				- input:  
+				- output:
 			
 	- Don't like any of the above canonicalization schemes? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
 	
