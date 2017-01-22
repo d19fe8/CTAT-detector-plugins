@@ -16,29 +16,34 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 	- Current canonicalization schemes include:
 		- Simple canonicalization: line-to-line transition representation
 			- **Example 1**
-				- input:  
+				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
 				- output:
 			- **Example 2**
-				- input:  
+				- input:   x + 6 = 15 -> 6 = 15
 				- output:
 			- **Example 3**
-				- input:  
+				- input:    x + 6 = 15 -> x = 15 + 6
 				- output:
 			
 		- Simple canonicalization: track changes
-			- [insert image of diff visual]
+			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.14.46%20PM.png)
+			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.18.39%20PM.png)
+			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.23.10%20PM.png)
 			
 			- **Example 1**
-				- input:  
+				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
 				- output:
 			- **Example 2**
-				- input:  
+				- input:   x + 6 = 15 -> 6 = 15 
 				- output:
 			- **Example 3**
 				- input:  
 				- output:
 			
 		- Change-based canonicalization: an extra layer over "track changes", which shows **only what changes between two lines in Lynnette** (and thus produces **fewer** categories, more focused on abstract **transformations**)
+		
+			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.24.00%20PM.png)
+		
 			- **Example 1**
 				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
 				- output:  ... - a = ...
@@ -46,8 +51,11 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 				- input:   x + 6 = 15 -> 6 = 15
 				- output:  [x] ... = ...
 			- **Example 3**
-				- input:    x + 6 = 15 -> x = 15 + 6
-				- output:   ... [+ 6] = ... + 6
+				- input:    x + 6 + 3 = 15 -> x + 3 = 15 + 6
+				- output:   ... [+ 6] ... = ... + 6
+			- **Example 4**
+				- input:    x + 6 + 3 - 2 = 15 -> x + 6 + 3 - 2 = 15 + 6
+				- output:   ... [+ 6] ... = ... + 6
 			
 	- In-development canonicalization schemes include:
 		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
