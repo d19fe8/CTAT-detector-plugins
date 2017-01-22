@@ -1,5 +1,7 @@
 # CTAT-detector-plugins
 
+Coming soon: [link to documentation and resources for extended CTAT tools: build your own detectors]
+
 **Current examples:**
 - **error categorizer:** keeps a count of student errors, categorized under a particular canonicalization scheme
 	- Current canonicalization schemes include:
