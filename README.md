@@ -3,11 +3,24 @@
 **Current examples:**
 - **error categorizer:** keeps a count of student errors, categorized under a particular canonicalization scheme
 	- Current canonicalization schemes include:
-		- Simple canonicalization
+		- Simple canonicalization: line-to-line transition representation
 			- 
-		- Change-based canonicalization
-			- 
+			
+		- Simple canonicalization: track changes
 			- [insert image of diff visual]
+			-- **Example I/O:**
+				- 
+			
+		- Change-based canonicalization: an extra layer over "track changes", which shows **only what changes between two lines in Lynnette** (and thus produces **fewer** categories, more focused on abstract **transformations**)
+			- **Example 1**
+				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
+				- output:  ... - a = ...
+			- **Example 2**
+				- input:   x + 6 = 15 -> 6 = 15
+				- output:  [x] ... = ...
+			- **Example 3**
+				- input:    x + 6 = 15 -> x = 15 + 6
+				- output:   ... [+ 6] = ... + 6
 			
 	- In-development canonicalization schemes include:
 		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
