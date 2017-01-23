@@ -28,13 +28,13 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 		- Simple canonicalization: line-to-line transition representation
 			- **Example 1**
 				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
-				- output:
+				- output:  x + a = b    ->   x + a - a = b
 			- **Example 2**
 				- input:   x + 6 = 15 -> 6 = 15
-				- output:
+				- output:  x + a = b  -> a = b
 			- **Example 3**
 				- input:    x + 6 = 15 -> x = 15 + 6
-				- output:
+				- output:   x + a = b  -> x = b + a
 			
 		- Simple canonicalization: track changes
 			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.14.46%20PM.png)
@@ -43,13 +43,13 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 			
 			- **Example 1**
 				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
-				- output:
+				- output:  x + a **- a** = b
 			- **Example 2**
 				- input:   x + 6 = 15 -> 6 = 15 
-				- output:
+				- output:  **[x +]** a = b
 			- **Example 3**
-				- input:  
-				- output:
+				- input:   x + 6 = 15 -> x = 15 + 6
+				- output:  x **[+ 6]** = 15 **+ 6**
 			
 		- Change-based canonicalization: an extra layer over "track changes", which shows **only what changes between two lines in Lynnette** (and thus produces **fewer** categories, more focused on abstract **transformations**)
 		
@@ -80,36 +80,63 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 				- input:  
 				- output:
 		- Inferred misconceptions (verbal category descriptions, which DO infer underlying misconceptions)
-			- **Example 1**
-				- input:  
-				- output:
-			- **Example 2**
-				- input:  
-				- output:
-			- **Example 3**
-				- input:  
-				- output:
+			- Misconception labeling scheme 1
+				- **Example 1**
+					- input:  
+					- output:
+				- **Example 2**
+					- input:  
+					- output:
+				- **Example 3**
+					- input:  
+					- output:
+			- Misconception labeling scheme 2
+				- **Example 1**
+					- input:  
+					- output:
+				- **Example 2**
+					- input:  
+					- output:
+				- **Example 3**
+					- input:  
+					- output:
+			- Misconception labeling scheme 3
+				- **Example 1**
+					- input:  
+					- output:
+				- **Example 2**
+					- input:  
+					- output:
+				- **Example 3**
+					- input:  
+					- output:
+			- ....
 			
-	- Don't like any of the above canonicalization schemes? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
-	
+	- Don't like any of the above canonicalization schemes (and/or misconception labeling schemes)? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
+
+
+- **current-step error count**
+
+- **stagnation**
+
+________________________________
+
+**In-development:**
 - **help-seeking models**
 	- Current help-seeking models include
 		- ...
 		- ...
 		
 	- In-development help-seeking models include
-
-- **current-step error count**
-
-- **stagnation**
-
-
-
-**In-development:**
+	
 - **BKT**
 	- at least one variant of BKT and at least one BKT-driven detector
 		- predictive stability
 		- possibly: BKT + contextual guess and slip --> Arroyo et al., carelessness detector
 - **a cognitive gaming detector**
+
+________________________________
+
+**For the future:**
   
 - at least one detector of a student's affective state (boredom detector tends to have higher accuracy than other affect detectors)
