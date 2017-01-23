@@ -30,7 +30,8 @@ https://github.com/CMUCTAT/CTAT
 				- ...
 			- Student-level (e.g., for use in a student dashboard, or in driving ITS adaptivity)
 				- ...
-
+				
+________________________________
 
 **Coming at some point... perhaps?**
 
@@ -38,6 +39,8 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 ^ Similar to the LearnSphere workshop last year
 [EDM folk, in particular: "You may find that skills you've developed for writing **offline analyses of log data** translate quite well to writing **online detectors** for use with CTAT tutors and TutorShop"]
 [FWIW: the EDM workshop proposal deadline is **February 21st, 2017**]
+
+________________________________
 
 **Current examples:**
 - **error categorizer:** 
