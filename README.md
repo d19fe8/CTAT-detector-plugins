@@ -4,9 +4,31 @@
 
 https://github.com/CMUCTAT/CTAT
 
-**Coming soon:** 
+**General features: coming soon / in development** 
 
-[link to documentation and resources for extended CTAT tools: build your own detectors]
+- [link to documentation and resources for extended CTAT tools: build your own detectors]
+
+- **the detector development and testing tools (...placeholder until we have a better/shorter name for this :) )**
+	- Motivation: In the absence of strong pre-existing theory, specified at a fairly fine-grained level, it can be difficult to know how best to design **effective micro-interventions** in an ITS (e.g., **how** should a tutor adapt at the step-level, and **in response to what?**)  or teacher-facing analytics displays that could **support effective interventions**. 
+	-ITS detectors are commonly **developed** using log data (e.g., GIFT's authoring tools explicitly support data-driven detector development, using log data) and/or **evaluated** using log data (e.g., under the "discovery with models" approach, correlations may be assessed between a detector's output and the output of other detectors, posttests, or external measures of student performance and learning behaviors).
+	- In order to design **effective** analytics-driven ITSs and dashboards, we must strive to evaluate, as directly as possible:
+		- the **expected causal impact** of a particular micro-intervention (and the usefulness of a **particular** set of analytics/detectors/measures in informing the relevant decision-makers of true **opportunities for intervention**
+		- the **expected usability** of analytics, when embedded in particular systems, for use in particular contexts, by members of a particular user population
+		
+	- **Features:** 
+		- Make use of both built-in and custom methods, to use historical data from intelligent tutoring systems (accepts DataShop export formats) in order to **estimate** the relative **causal impact** of…
+			- different student behaviors/states on learning
+			- potential interventions on these student behaviors/states
+			- ...
+			
+		- Methods to evaluate usability
+			- Teacher-level (e.g., for a next-day use dashboard or reporting system)
+				- ...
+			- Classroom-level (e.g., for real-time teacher or peer-tutoring support tools)
+				- ...
+			- Student-level (e.g., for use in a student dashboard, or in driving ITS adaptivity)
+				- ...
+
 
 **Coming at some point... perhaps?**
 
@@ -133,6 +155,7 @@ ________________________________
 	- at least one variant of BKT and at least one BKT-driven detector
 		- predictive stability
 		- possibly: BKT + contextual guess and slip --> Arroyo et al., carelessness detector
+		
 - **a cognitive gaming detector**
 
 ________________________________
