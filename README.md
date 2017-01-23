@@ -143,8 +143,12 @@ ________________________________
 
 
 - **current-step error count**
+	- Description: keeps a running count of attempts on each step in an interface
+	- Outputs: the running count of attempts on **the most recent step the student has worked on** (e.g., if a student has tried 30 times on a particular interface element, the output will be "30")
 
 - **stagnation**
+	- Description: outputs alerts after 
+	- Outputs: custom message after each specified time-interval (e.g.,, "idle for more than 30 seconds", "idle for more than 1 minute", "idle for more than 2 minutes")
 
 ________________________________
 
@@ -152,19 +156,39 @@ ________________________________
 - **help-seeking models**
 	- Current help-seeking models include
 		- ...
+			- Description:
+			- Outputs:
 		- ...
-		
-	- In-development help-seeking models include
+			- Description:
+			- Outputs:
+		- ....
+	
 	
 - **BKT**
 	- at least one variant of BKT and at least one BKT-driven detector
 		- predictive stability
+			- Description:
+			- Outputs:
 		- possibly: BKT + contextual guess and slip --> Arroyo et al., carelessness detector
-		
+			- Description:
+			- Outputs:
+
+- **Simple wheel-spinning detectors**
+	- ...
+		- Description:
+		- Outputs:
+	- ...
+
 - **a cognitive gaming detector**
+	- ...
+		- Description:
+		- Outputs:
 
 ________________________________
 
 **For the future:**
   
-- at least one detector of a student's affective state (boredom detector tends to have higher accuracy than other affect detectors)
+- at least one detector of a student's **affective state**: 
+	- (boredom detector tends to have higher accuracy than other affect detectors)
+		- Description:
+		- Outputs:
