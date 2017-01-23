@@ -1,5 +1,8 @@
 # CTAT-detector-plugins
 
+**CTAT main repository**
+https://github.com/CMUCTAT/CTAT
+
 **Coming soon:** 
 
 [link to documentation and resources for extended CTAT tools: build your own detectors]
