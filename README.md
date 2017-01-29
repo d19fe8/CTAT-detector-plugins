@@ -46,16 +46,21 @@ ________________________________
 
 - **help-seeking models**
 	- Current help-seeking models include
-		1. Original help-seeking model
+		1. **Original** help-seeking model
 			- Description:
 			- Outputs:
-		2. Original help-seeking model: explicitly diagnose not only when an action is [preferred / acceptable / not acceptable] but also when it is [help abuse / help avoidance]
+		2. Original help-seeking model: explicitly diagnose not only when an action is [preferred / acceptable / not acceptable] but also when it is **[help abuse / help avoidance]**
 			- Description:
 			- Outputs:
-		3. Original help-seeking model: expanded consideration of when to ask for help from teacher
-			- Description:
-			- Outputs:
-		4. Original help-seeking model: modifications based on the Help Helps paper
+		3. Original help-seeking model: expanded considerations of **when to ask for help from teacher** (representing various hypotheses of when teacher help might be most effective
+			- Variant 1
+				- Description:
+				- Outputs:
+			- Variant 2
+				- Description:
+				- Outputs:
+			- ...
+		4. Original help-seeking model: **modifications based on the Help Helps paper**
 			- Variant 1
 				- Description:
 				- Outputs:
