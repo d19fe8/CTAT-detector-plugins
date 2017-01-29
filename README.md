@@ -43,6 +43,20 @@ Workshop (or similar event) to researcher-source CTAT detectors (and cool applic
 ________________________________
 
 **Current examples:**
+
+- **help-seeking models**
+	- Current help-seeking models include
+		- Original help-seeking model
+			- Description:
+			- Outputs:
+		- Variant 1
+			- Description:
+			- Outputs:
+		- Variant 2
+			- Description:
+			- Outputs:
+		- ...
+
 - **error categorizer:** 
 	- Description: keeps a count of student errors, categorized under a particular canonicalization scheme
 	- Outputs: mapping from observed student error categories to
@@ -153,16 +167,6 @@ ________________________________
 ________________________________
 
 **In-development:**
-- **help-seeking models**
-	- Current help-seeking models include
-		- ...
-			- Description:
-			- Outputs:
-		- ...
-			- Description:
-			- Outputs:
-		- ....
-	
 	
 - **BKT**
 	- at least one variant of BKT and at least one BKT-driven detector
