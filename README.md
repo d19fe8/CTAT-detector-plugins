@@ -4,19 +4,18 @@
 
 https://github.com/CMUCTAT/CTAT
 
-**General features: coming soon / in development** 
-
-- [link to documentation and resources for extended CTAT tools: build your own detectors]
+**General features: coming soon / in development**
 
 - **the detector development and testing tools (...placeholder until we have a better/shorter name for this :) )**
 	- **Motivation:** 
-		- In the absence of strong pre-existing theory, specified at a fairly fine-grained level, it can be difficult to know how best to design **effective micro-interventions** in an ITS (e.g., **how** should a tutor adapt at the step-level, and **in response to what?**)  or teacher-facing analytics displays that could **support effective interventions**. 
+		- In the absence of strong pre-existing theory, specified at a fairly fine-grained level, it can be difficult to know how best to design **effective micro-interventions** in an ITS (e.g., **how** should a tutor adapt at the step-level, and **in response to what?**)  or teacher-facing analytics displays that could **support effective teacher-led micro-interventions**. 
 		- ITS detectors are commonly **developed** using log data (e.g., GIFT's authoring tools explicitly support data-driven detector development, using log data) and/or **evaluated** using log data (e.g., under the "discovery with models" approach, correlations may be assessed between a detector's output and the output of other detectors, posttests, or external measures of student performance and learning behaviors).
 		
 	- In order to design **effective** analytics-driven ITSs and dashboards, we must strive to evaluate, as directly as possible:
 		- the **expected causal impact** of a particular micro-intervention (and the usefulness of a **particular** set of analytics/detectors/measures in informing the relevant decision-makers of true **opportunities for intervention**
 		- the **expected usability** of analytics, when embedded in particular systems, for use in particular contexts, by members of a particular user population
-		
+
+<!---
 	- **Features:** 
 		- Make use of both built-in and custom methods, to use historical data from intelligent tutoring systems (accepts DataShop export formats) in order to **estimate** the relative **causal impact** of…
 			- different student behaviors/states on learning
@@ -30,26 +29,41 @@ https://github.com/CMUCTAT/CTAT
 				- ...
 			- Student-level (e.g., for use in a student dashboard, or in driving ITS adaptivity)
 				- ...
-				
+--->
 ________________________________
 
-**Coming at some point... perhaps?**
+**Current examples: thoroughly tested and validated**
 
-Workshop (or similar event) to researcher-source CTAT detectors (and cool applications of detectors)
-^ Similar to the LearnSphere workshop last year
-[EDM folk, in particular: "You may find that skills you've developed for writing **offline analyses of log data** translate quite well to writing **online detectors** for use with CTAT tutors and TutorShop"]
-[FWIW: the EDM workshop proposal deadline is **February 21st, 2017**]
+- **current-step error count**
+	- Description: keeps a running count of attempts on each step in an interface
+	- Outputs: the running count of attempts on **the most recent step the student has worked on** (e.g., if a student has tried 30 times on a particular interface element, the output will be "30")
+
+- **stagnation**
+	- Description: outputs alerts after 
+	- Outputs: custom message after each specified time-interval (e.g., "idle for more than 30 seconds", "idle for more than 1 minute", "idle for more than 2 minutes")
 
 ________________________________
 
-**Current examples:**
+**Current examples (still in development!)**
+
+- **Bayesian Knowledge Tracing (BKT)**
+	- **Standard BKT**
+		- Description:
+		- Outputs:
+	- Variant 1
+		- Description:
+		- Outputs:
+	- Variant 2
+		- Description:
+		- Outputs:
+	...
 
 - **help-seeking models**
 	- Current help-seeking models include
-		1. Original help-seeking model: explicitly diagnose not only when an action is **[preferred / acceptable / not acceptable / ask teacher for help]** but also when it is **[help abuse / help avoidance]**
+		1. **Original help-seeking model**: explicitly diagnose not only when an action is **[preferred / acceptable / not acceptable / ask teacher for help]** but also when it is **[help abuse / help avoidance]**
 			- Description:
 			- Outputs: "\<action evaluation>/\<action type>" (e.g., "preferred/try step" or "not acceptable/help avoidance")
-		3. Original help-seeking model: expanded considerations of **when to ask for help from teacher** (representing various hypotheses of when teacher help might be most effective
+		2. **New** variant on help-seeking model: expanded considerations of **when to ask for help from teacher** (representing various hypotheses of when teacher help might be most effective)
 			- Variant 1
 				- Description:
 				- Outputs:
@@ -57,15 +71,32 @@ ________________________________
 				- Description:
 				- Outputs:
 			- ...
-		4. Original help-seeking model: **modifications based on the Help Helps paper**
-			- Variant 1
-				- Description:
-				- Outputs:
+		3. **New** variants help-seeking model: **modifications based on recent "Help Helps" paper**
+			- Try step is preferred for low-skill steps (re: Ido, 2014)
+				- Variant 1.1
+					- Description:
+					- Outputs:
+				- Variant 1.2
+					- Description:
+					- Outputs:
+					- Validation:
 			- Variant 2
+				- Variant 2.1
+					- Description:
+					- Outputs:
+					- Validation:
+				- Variant 2.2
+					- Description:
+					- Outputs:
+					- Validation:
+			- Variant 3
 				- Description:
 				- Outputs:
 			- ...
 		- ...
+		
+		- Validation: these model variants were compared on \<dataset_names> using \<local-quantitative / pre-post-quantitative / usablity studies>, with results shown in the following table:
+		\<insert table>
 
 - **error categorizer:** 
 	- Description: keeps a count of student errors, categorized under a particular canonicalization scheme
@@ -166,26 +197,17 @@ ________________________________
 	- Don't like any of the above canonicalization schemes (and/or misconception labeling schemes)? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
 
 
-- **current-step error count**
-	- Description: keeps a running count of attempts on each step in an interface
-	- Outputs: the running count of attempts on **the most recent step the student has worked on** (e.g., if a student has tried 30 times on a particular interface element, the output will be "30")
-
-- **stagnation**
-	- Description: outputs alerts after 
-	- Outputs: custom message after each specified time-interval (e.g.,, "idle for more than 30 seconds", "idle for more than 1 minute", "idle for more than 2 minutes")
-
 ________________________________
 
 **In-development:**
 	
-- **BKT**
-	- at least one variant of BKT and at least one BKT-driven detector
-		- predictive stability
-			- Description:
-			- Outputs:
-		- possibly: BKT + contextual guess and slip --> Arroyo et al., carelessness detector
-			- Description:
-			- Outputs:
+- at least one variant of BKT and at least one BKT-driven detector
+	- predictive stability
+		- Description:
+		- Outputs:
+	- possibly: BKT + contextual guess and slip --> Arroyo et al., carelessness detector
+		- Description:
+		- Outputs:
 
 - **Simple wheel-spinning detectors**
 	- ...
