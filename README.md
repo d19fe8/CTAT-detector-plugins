@@ -7,6 +7,7 @@ https://github.com/CMUCTAT/CTAT
 **General features: coming soon / in development**
 
 - **the detector development and testing tools (...placeholder until we have a better/shorter name for this :) )**
+
 <!---
 	- **Motivation:** 
 		- In the absence of strong pre-existing theory, specified at a fairly fine-grained level, it can be difficult to know how best to design **effective micro-interventions** in an ITS (e.g., **how** should a tutor adapt at the step-level, and **in response to what?**)  or teacher-facing analytics displays that could **support effective teacher-led micro-interventions**. 
