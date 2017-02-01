@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package name="dashboard_test" label="Dashboard Test" description="Dashboard Test" tutor_type="javascript">
+  <Problems>
+    <Problem name="1416" label="1416" description="1416" tutor_flag="tutor" problem_file="1416.brd" student_interface="fractionAddition.html">
+      <Skills>
+        <Skill name="copy-answer-denominator" category="fraction-addition" occurrences="1"/>
+        <Skill name="reduce-denominator" category="fraction-addition" occurrences="1"/>
+        <Skill name="determine-lcd" category="fraction-addition" occurrences="2"/>
+        <Skill name="convert-numerator" category="fraction-addition" occurrences="2"/>
+        <Skill name="reduce-numerator" category="fraction-addition" occurrences="1"/>
+        <Skill name="add-numerators" category="fraction-addition" occurrences="1"/>
+        <Skill name="multiply-denominators" category="fraction-addition" occurrences="1"/>
+      </Skills>
+    </Problem>
+  </Problems>
+  <ProblemSets>
+    <ProblemSet name="fraction_addition" label="Fraction Addition" description="Fraction Addition" status="Active" team_size="1" selection_algorithm="sequential" max_count="1000" max_repeat="1" initial_sequence="0">
+      <Problems>
+        <Problem name="1416" position="1" role="0"/>
+      </Problems>
+      <Skills>
+        <Skill name="copy-answer-denominator" category="fraction-addition" label="Copy Answer Denominator" description="Copy Answer Denominator" position="0" pKnown="0.25" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+        <Skill name="reduce-denominator" category="fraction-addition" label="Reduce Denominator" description="Reduce Denominator" position="1" pKnown="0.25" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+        <Skill name="determine-lcd" category="fraction-addition" label="Determine LCD" description="Determine Lcd" position="2" pKnown="0.15" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+        <Skill name="convert-numerator" category="fraction-addition" label="Convert Numerator" description="Convert Numerator" position="3" pKnown="0.25" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+        <Skill name="reduce-numerator" category="fraction-addition" label="Reduce Numerator" description="Reduce Numerator" position="4" pKnown="0.25" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+        <Skill name="add-numerators" category="fraction-addition" label="Add Numerators" description="Add Numerators" position="5" pKnown="0.25" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+        <Skill name="multiply-denominators" category="fraction-addition" label="Multiply Denominators" description="Multiply Denominators" position="6" pKnown="0.3" pLearn="0.2" pGuess="0.2" pSlip="0.1"/>
+      </Skills>
+      <Assets>
+      </Assets>
+      <Categories>
+        <Standard name="PA" label="PA Assessment Anchors" description="PA Assessment Anchors" category="standard"/>
+        <Standard name="NCTM" label="NCTM Curriculum Focal Points" description="NCTM Curriculum Focal Points" category="standard"/>
+        <Standard name="CommonCore" label="Common Core Standards" description="Common Core Standards" category="standard"/>
+        <Standard name="Student" label="Problem Set Categories" description="Student Standards" category="standard"/>
+        <Standard name="MA3. Computation and Estimation" label="Ma3. Computation And Estimation" description="Ma3. Computation And Estimation" category="standard"/>
+      </Categories>
+    </ProblemSet>
+  </ProblemSets>
+  <Assets>
+    <Asset name="1416.brd" label="1416.Brd" description="1416.Brd" asset_locator="FinalBRDs/1416.brd"/>
+    <Asset name="fractionAddition.html" label="Fraction Addition.Html" description="Fraction Addition.Html" asset_locator="HTML/fractionAddition.html"/>
+    <Asset name="CTAT.css" label="Ctat.Css" description="Ctat.Css" asset_locator="HTML/Assets/CTAT.css"/>
+    <Asset name="ctat.min.js" label="Ctat.Min.Js" description="Ctat.Min.Js" asset_locator="HTML/Assets/ctat.min.js"/>
+    <Asset name="ctatloader.js" label="Ctatloader.Js" description="Ctatloader.Js" asset_locator="HTML/Assets/ctatloader.js"/>
+    <Asset name="detector1.js" label="Detector1.Js" description="Detector1.Js" asset_locator="HTML/Assets/detector1.js"/>
+    <Asset name="html_qa.js" label="Html Qa.Js" description="Html Qa.Js" asset_locator="HTML/Assets/html_qa.js"/>
+    <Asset name="jquery.min.js" label="Jquery.Min.Js" description="Jquery.Min.Js" asset_locator="HTML/Assets/jquery.min.js"/>
+    <Asset name="mail-worker.js" label="Mail Worker.Js" description="Mail Worker.Js" asset_locator="HTML/Assets/mail-worker.js"/>
+    <Asset name="transaction_mailer_users.js" label="Transaction Mailer Users.Js" description="Transaction Mailer Users.Js" asset_locator="HTML/Assets/transaction_mailer_users.js"/>
+  </Assets>
+</Package>
