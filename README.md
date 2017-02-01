@@ -11,7 +11,18 @@ ________________________________
 
 **General features: coming soon / in development**
 
-- **the detector development and testing tools (...placeholder until we have a better/shorter name for this :) )**
+- **integrated detector development and testing tools** (...placeholder until we have a better/shorter name for this :) )
+
+- **working initialization of detectors from TutorShop (i.e., detector memory across problems)**
+
+- **aggregator API**
+
+- **API for dashboard-TutorShop communication, and dashboard development templates**
+
+- **demo of "detector-chaining"**
+
+
+
 
 <!---
 	- **Motivation:** 
