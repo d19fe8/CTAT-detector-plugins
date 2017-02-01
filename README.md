@@ -1,8 +1,13 @@
 # CTAT-detector-plugins
 
+**Note: in general, detectors in this repository are currently still under development**
+________________________________
+
 **CTAT main repository**
 
 https://github.com/CMUCTAT/CTAT
+
+________________________________
 
 **General features: coming soon / in development**
 
@@ -200,7 +205,7 @@ ________________________________
 
 ________________________________
 
-**In-development:**
+**For the future:**
 	
 - at least one variant of BKT and at least one BKT-driven detector
 	- predictive stability
@@ -220,10 +225,6 @@ ________________________________
 	- ...
 		- Description:
 		- Outputs:
-
-________________________________
-
-**For the future:**
   
 - at least one detector of a student's **affective state**: 
 	- (boredom detector tends to have higher accuracy than other affect detectors)
