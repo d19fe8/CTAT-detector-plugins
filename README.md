@@ -80,7 +80,10 @@ ________________________________
 		1. **Original help-seeking model**: explicitly diagnose not only when an action is **[preferred / acceptable / not acceptable / ask teacher for help]** but also when it is **[help abuse / help avoidance]**
 			- Description:
 			- Outputs: "\<action evaluation>/\<action type>" (e.g., "preferred/try step" or "not acceptable/help avoidance")
-		2. **New** variant on help-seeking model: expanded considerations of **when to ask for help from teacher** (representing various hypotheses of when teacher help might be most effective)
+		2. **Original "bottom-out hints as worked examples" model**
+			- Description:
+			- Outputs:
+		3. **New** variant on help-seeking model: expanded considerations of **when to ask for help from teacher** (representing various hypotheses of when teacher help might be most effective)
 			- Variant 1
 				- Description:
 				- Outputs:
@@ -88,7 +91,7 @@ ________________________________
 				- Description:
 				- Outputs:
 			- ...
-		3. **New** variants help-seeking model: **modifications based on recent "Help Helps" paper**
+		4. **New** variants help-seeking model: **modifications based on recent "Help Helps" paper**
 			- Try step is preferred for low-skill steps (re: Ido, 2014)
 				- Variant 1.1
 					- Description:
