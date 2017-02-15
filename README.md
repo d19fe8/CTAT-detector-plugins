@@ -21,8 +21,9 @@ Forward transactions to external listeners running in other Worker
  Second, hard-code the mail-worker.js URL and the detectors' URLs, each
  relative to the HTML/Assets/ folder, in '''transaction_mailer_users.js''',
  which defines a global object TransactionMailerUsers, and include this .js
- file in your .html. E.g., in <head>,
-
+ file in your .html. E.g., in 
+    <head>
+	...
      <script
 	src="https://cdn.ctat.cs.cmu.edu/releases/latest/ctatloader.js"></script>
      '''<script src="Assets/transaction_mailer_users.js"></script>'''
