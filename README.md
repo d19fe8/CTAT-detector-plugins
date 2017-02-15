@@ -9,6 +9,53 @@ https://github.com/CMUCTAT/CTAT
 
 ________________________________
 
+Forward transactions to external listeners running in other Worker
+ threads. The spec for the JSON messages to the forwarder is in
+ [https://docs.google.com/document/d/1XADrKNrFOwkRvwCg9puwny5OkS-
+ z64VKGd06EJgc03Q/edit?usp=sharing txSpec.txt]
+
+ To activate this feature, first provide an initialization parameter
+ '''process_transactions_url''' whose value is the TutorShop URL for
+ transactions to be sent to the server. Optionally, provide also  ausk
+
+ Second, hard-code the mail-worker.js URL and the detectors' URLs, each
+ relative to the HTML/Assets/ folder, in '''transaction_mailer_users.js''',
+ which defines a global object TransactionMailerUsers, and include this .js
+ file in your .html. E.g., in <head>,
+
+     ...
+     <script
+ src="https://cdn.ctat.cs.cmu.edu/releases/latest/ctatloader.js"></script>
+     '''<script src="Assets/transaction_mailer_users.js"></script>'''
+ </head>
+
+ Design: if the process_transactions_url parameter is set, then new class
+ CTATTransactionListener looks for an object TransactionMailerUsers and
+ calls TransactionMailerUsers.create(). This object is defined in
+ transaction_mailer_users.js, which should be included via a <script> tag
+ in the html for a tutor that wants to use transaction forwarding or
+ detectors.
+
+ The code in TransactionMailerUsers instantiates and starts the mail-worker
+ and detectors from URLs hard-coded in it. Arguments to
+ TransactionMailerUsers.create() pass to the mail-worker the
+ process_transaction_url and process_detectors_url as well as an
+ authenticity_token needed for each POST to Rails.
+
+ CTATTransactionListener then receives messages as a CommShell event
+ listener and forwards student actions and TPAs to the mail-worker and to
+ any detectors TransactionMailerUsers.sendTransaction(). For transactions
+ that have a tutor response, both tool and tutor data are sent in a single
+ transaction message.
+
+--
+
+Comment:
+
+ Added a reference to the msg spec.
+
+_______________________
+
 **General features: coming soon / in development**
 
 - **integrated detector development and testing tools** (...placeholder until we have a better/shorter name for this :) )
