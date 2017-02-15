@@ -23,16 +23,15 @@ Forward transactions to external listeners running in other Worker
  which defines a global object TransactionMailerUsers, and include this .js
  file in your .html. E.g., in <head>,
 
-     ...
      <script
- src="https://cdn.ctat.cs.cmu.edu/releases/latest/ctatloader.js"></script>
+	src="https://cdn.ctat.cs.cmu.edu/releases/latest/ctatloader.js"></script>
      '''<script src="Assets/transaction_mailer_users.js"></script>'''
- </head>
+    </head>
 
  Design: if the process_transactions_url parameter is set, then new class
  CTATTransactionListener looks for an object TransactionMailerUsers and
  calls TransactionMailerUsers.create(). This object is defined in
- transaction_mailer_users.js, which should be included via a <script> tag
+ transaction_mailer_users.js, which should be included via a \<script> tag
  in the html for a tutor that wants to use transaction forwarding or
  detectors.
 
