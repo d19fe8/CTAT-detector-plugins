@@ -2,10 +2,12 @@
 ________________________________
 
 ## Table of Contents  
-[Link to CTAT main repository](#ctatmain) <br/> 
 [Upcoming features](#upcoming) <br/> 
-[Most stable detectors](#moststable) <br/> 
-[In-development](#indevelopment) <br/> 
+
+**Detectors** <br/> 
+- [Most stable detectors](#moststable) <br/> 
+- [In-development](#indevelopment) <br/> 
+
 [How to test in running tutors](#howtotest)
 
 
