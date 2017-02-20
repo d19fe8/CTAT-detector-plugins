@@ -1,0 +1,86 @@
+<html>
+<head>
+	<title>Replay UI Controller</title>
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script>
+	$(document).on("ready", function (){
+		$("#pause").on("click",function (){
+			
+			$.post("change.php", function (data){
+				console.log(data);
+			});
+			$.post("check.php", function (data){
+				console.log("$"+data+"$");
+				if( data == "paused" ){
+					$("#status").html("Replay is Currently <b id=\"play\"> Paused</b>");
+				}
+				else{
+					$("#status").html("Replay is Currently <b id=\"play\"> Playing</b>");
+				}
+			});
+		});
+		
+	});
+	$(document).on("ready", function(){
+		$.post("check.php", function (data){
+			if( data == "paused" ){
+				$("#status").html("Replay is Currently <b id=\"play\"> Paused</b>");
+			}
+			else{
+				$("#status").html("Replay is Currently <b id=\"play\"> Playing</b>");
+			}
+		});
+	});
+	setInterval (function(){
+		$.post("activeStudents.txt", function (data){
+			console.log(data);
+			if( data == "0" || data == 0 ){
+				$("#activeStudents").html("");
+				return;
+			}
+			for( var i = 0; i < data.length; i++ ){
+				data = data.replace("hey", "</br>     ");
+			}
+			$("#activeStudents").html(data);
+		});
+	},2000);
+		
+	</script>	
+	<style>
+		body{
+			font-size: 200%;
+			background-color: lightblue;
+		}
+		button{
+			background-color: lightgreen;
+			-webkit-transition-duration: 0.4s;
+			transition-duration: 0.6s;
+			display: inline;
+			width: 40%;
+			height: 15%;
+			padding: 1%;
+			font-size:160%;
+			border: 3px solid rgb(64,0,135);
+			color: rgb(64,0,135);
+			border-radius: 15%;
+			margin-top: 1%;
+			margin-bottom: 1%;
+		}
+		button:hover {
+			background-color: rgb(174,148,209);
+		}
+		#play{
+			color:red;
+		}
+		#activeStudents{
+			margin-left: 10%;
+		}
+	</style>
+</head>
+<body>
+	<button type="button" id="pause"><b>Play/Pause</b></button>
+	<div id=status><b></b></div>
+	<p><b>Students Currently Active:<b></p>
+	<p id=activeStudents></p>
+</body>
+</html>

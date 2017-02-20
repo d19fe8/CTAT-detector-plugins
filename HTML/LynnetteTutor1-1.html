@@ -1,0 +1,1068 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="http://augustus.pslc.cs.cmu.edu/releases/Nupur/CTAT.css">
+        <link rel="stylesheet" type="text/css" href="LynnetteTutor1-1.css">
+
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="http://augustus.pslc.cs.cmu.edu/releases/Nupur/ctat.min.js"></script>
+        <script src="http://augustus.pslc.cs.cmu.edu/releases/Nupur/ctatloader.js"></script>
+
+        <script>
+            // useDebugging=true;
+			console.log("uniqueStringDeleteMe");
+            var myVars =
+             {
+                question_file: "-2x+2eq-5x+8-post.brd",
+                tutoring_service_communication: "http"
+             };
+
+            function resetComponentTPA (aComponent)
+            {
+                if (CTATShellTools.findComponentInstance (aComponent)!=null)
+                {
+                    CTATShellTools.findComponentInstance (aComponent).unlock();
+
+                    if (aComponent.indexOf('solve') > -1 || aComponent.indexOf('postExplNum') > -1)
+                    {
+                        CTATShellTools.findComponentInstance (aComponent).UpdateTextField('');
+                    }
+                    if (aComponent.indexOf('postExplOp') > -1)
+                    {
+                        CTATShellTools.findComponentInstance (aComponent).UpdateComboBox('What did you do');
+                    }
+                    if (aComponent.indexOf('postExplSide') > -1)
+                    {
+                        CTATShellTools.findComponentInstance (aComponent).UpdateComboBox('to which side');
+                    }
+                }
+            } 
+
+
+            function ctatOnload ()
+            {
+                initTutor(myVars);
+
+                var logLibrary=commShell.getLoggingLibrary ();
+                logLibrary.assignLogListener (function logListener (aMessage)
+                {
+                    console.log ("Log message: " + aMessage);
+                    type = defineMessage(aMessage);
+
+                    if (type == "Context") {
+                        transaction = parseContextTransactionID(aMessage);
+                        anonStud = parseContextAnonStudentID(aMessage);
+                        session = parseContextSessionID(aMessage);
+                        problemName = parseContextProblemName(aMessage);
+                        className = parseContextClassName(aMessage);
+                        schoolName = parseContextSchoolName(aMessage);
+                        instructorName = parseContextInstructorName(aMessage);
+                        dataset = parseContextDataset(aMessage);
+                        assignment = parseContextAssignment(aMessage);
+                        problemSet = parseContextProblemSet(aMessage);
+                        tutorFlag = parseContextTutorFlag(aMessage);
+                        tutorName = parseContextTutorName(aMessage);
+
+                        postContextMessage(transaction, anonStud, session, problemName, className, schoolName, instructorName, dataset, assignment, problemSet, tutorFlag, tutorName);
+                    }
+					else{
+						postMessage(aMessage);
+					}
+
+                    // if (type == "Tool") {
+                    //     sTool = parseSelection(aMessage);
+                    //     aTool = parseAction(aMessage);
+                    //     iTool = parseInput(aMessage);
+                    //     if (sTool != "") {
+                    //         testPost(type, sTool, aTool, iTool);
+                    //     }
+                    // }
+
+                    // if (type == "Tutor") {
+                    //     sTutor = parseSelection(aMessage);
+                    //     aTutor = parseAction(aMessage);
+                    //     iTutor = parseInput(aMessage);
+                    //     pTutor = parseProbability(aMessage);
+                    //     if (pTutor.length != 0) {
+                    //         skTutor = parseSkill(aMessage);
+                    //     }
+                    //     else {
+                    //         skTutor = "";
+                    //     }
+                    //     if (sTutor.length > 0) {
+                    //         testPost(type, sTutor, aTutor, iTutor, pTutor, skTutor);
+                    //     }
+                    // }
+                });
+
+            }
+
+            /////////////
+            // PARSING //
+            /////////////
+
+            function defineMessage (aMessage)
+            {   
+                var logTest = "<log_session";
+                var contextTest = "<context_message";
+                var toolTest = "<tool_message";
+                var tutorTest = "<tutor_message";
+                var logIndex = aMessage.indexOf(logTest);
+                var contextIndex = aMessage.indexOf(contextTest);
+                var toolIndex = aMessage.indexOf(toolTest);
+                var tutorIndex = aMessage.indexOf(tutorTest);
+                if (logIndex == 0) {
+                    return "Log";
+                }
+                if (contextIndex == 0) {
+                    return "Context";
+                }
+                if (toolIndex == 0) {
+                    return "Tool";
+                }
+                if (tutorIndex == 0) {
+                    return "Tutor";
+                }
+            }
+
+            //////////////////////////////
+            // PARSING CONTEXT MESSAGES //
+            //////////////////////////////
+
+            function parseContextTransactionID (aMessage) {
+                var start = "context_messsage_id=";
+                var end = "name";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+
+            }
+
+            // function parseContextAnonStudentID (aMessage) {
+
+            // }
+
+            // function parseContextSessionID (aMessage) {
+
+            // }
+
+            function parseContextProblemName (aMessage) {
+                var start = "name";
+                var end = ">";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextClassName (aMessage) {
+                var start = "<class><name>";
+                var end = "</name>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextSchoolName (aMessage) {
+                var start = "<school>";
+                var end = "</school>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextInstructorName (aMessage) {
+                var start = "<instructor>";
+                var end = "</instructor>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextDataset (aMessage) {
+                var start = "<dataset><name>";
+                var end = "</name>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextAssignment (aMessage) {
+                var start = "<level type=Assignment><name>";
+                var end = "</name>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextProblemSet (aMessage) {
+                var start = "<level type=ProblemSet><name>";
+                var end = "</name>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextTutorFlag (aMessage) {
+                var start = "<problem tutorFlag=";
+                var end = "<name>";
+                var minLen = start.length;
+                var startIndex = aMessage.indexOf(start);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            function parseContextTutorName (aMessage) {
+                var tempStart = "<problem tutorFlag>";
+                var start = "<name>";
+                var end = "</name>";
+                var minLen = start.length;
+                var tempIndex = aMessage.indexOf(tempStart);
+                var startIndex = aMessage.indexOf(start, tempIndex);
+                var endIndex = aMessage.indexOf(end, startIndex);
+                if (startIndex != -1) {
+                    return aMessage.slice(startIndex+minLen, endIndex);
+                }
+                else {
+                    return "";
+                }
+            }
+
+            // function parseContextTimeStamp (aMessage) {
+
+            // }
+
+            function postContextMessage (transaction, anonStud, session, problemName, className, schoolName, instructorName, dataset, assignment, problemSet, tutorFlag, tutorName)
+            {
+                var my_data = JSON.stringify({"transaction": transaction});
+                $.ajax({
+                    url: "/run/writeToDB", 
+                    //route over here; ask about parameter for authentication (from Martin/Jonathan)
+                    type: "POST",
+                    data: my_data,
+                    dataType: "json",
+                    processData: false,
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(JSON.stringify(jqXHR));
+                        console.log(data)
+                        console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                    }
+
+                }).done(function (msg) {
+                    console.log(msg);
+					console.log("sentContextMessage");
+                });
+            }
+			
+			
+			function postMessage( aMessage )
+			{
+				console.log("peter");
+			}
+
+            ///////////////////////////
+            // PARSING TOOL MESSAGES //
+            ///////////////////////////
+
+            // function parseToolTransactionID (aMessage) {
+
+            // }
+
+            // function parseToolAnonStudentID (aMessage) {
+
+            // }
+
+            // function parseToolSessionID (aMessage) {
+
+            // }
+
+            // function parseToolTimezone (aMessage) {
+
+            // }
+
+            // function parseStudentResponseType (aMessage) {
+
+            // }
+
+            // function parseStudentResponseSubtype (aMessage) {
+
+            // }
+
+            // function parseTutorResponseType (aMessage) {
+
+            // }
+
+            // function parseTutorResponseSubtype (aMessage) {
+
+            // }
+
+            // function parseLevelAssignment (aMessage) {
+
+            // }
+
+            // function parseLevelProblemSet (aMessage) {
+
+            // }
+
+            // function parseProblemName (aMessage) {
+
+            // }
+
+            // function parseProblemView (aMessage) {
+
+            // }
+
+            // function parseOutcome (aMessage) {
+
+            // }
+
+            // function parseToolSelection (aMessage)
+            // {   
+            //     var start = "<selection>";
+            //     var end = "</selection>";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start);
+            //     var endIndex = aMessage.indexOf(end);
+            //     if (startIndex != -1) {
+            //         return aMessage.slice(startIndex+minLen, endIndex);
+            //     }
+            //     else {
+            //         return "";
+            //     }
+            // }
+
+            // function parseToolAction (aMessage)
+            // {
+            //     var start = "<action>";
+            //     var end = "</action>";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start);
+            //     var endIndex = aMessage.indexOf(end);
+            //     if (startIndex != -1) {
+            //         return aMessage.slice(startIndex+minLen, endIndex);
+            //     }
+            //     else {
+            //         return "";
+            //     }
+            // }
+
+            // function parseToolInput (aMessage)
+            // {
+            //     var start = "<input>";
+            //     var end = "</input>";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start);
+            //     var endIndex = aMessage.indexOf(end);
+            //     if (startIndex != -1) {
+            //         partInput = aMessage.slice(startIndex+minLen, endIndex);
+            //         dataIndex = partInput.indexOf("CDATA");
+            //         dataStart = partInput.indexOf("[", dataIndex) + 1;
+            //         dataEnd = partInput.indexOf("]", dataIndex);
+            //         if (dataIndex != -1) {
+            //             return partInput.slice(dataStart, dataEnd);
+            //         }
+            //     }
+            //     else {
+            //         return "";
+            //     }
+            // }
+
+            // function parseTutorSelection (aMessage)
+            // {   
+            //     var start = "<selection>";
+            //     var end = "</selection>";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start);
+            //     var endIndex = aMessage.indexOf(end);
+            //     if (startIndex != -1) {
+            //         return aMessage.slice(startIndex+minLen, endIndex);
+            //     }
+            //     else {
+            //         return "";
+            //     }
+            // }
+
+            // function parseTutorAction (aMessage)
+            // {
+            //     var start = "<action>";
+            //     var end = "</action>";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start);
+            //     var endIndex = aMessage.indexOf(end);
+            //     if (startIndex != -1) {
+            //         return aMessage.slice(startIndex+minLen, endIndex);
+            //     }
+            //     else {
+            //         return "";
+            //     }
+            // }
+
+            // function parseTutorInput (aMessage)
+            // {
+            //     var start = "<input>";
+            //     var end = "</input>";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start);
+            //     var endIndex = aMessage.indexOf(end);
+            //     if (startIndex != -1) {
+            //         partInput = aMessage.slice(startIndex+minLen, endIndex);
+            //         dataIndex = partInput.indexOf("CDATA");
+            //         dataStart = partInput.indexOf("[", dataIndex) + 1;
+            //         dataEnd = partInput.indexOf("]", dataIndex);
+            //         if (dataIndex != -1) {
+            //             return partInput.slice(dataStart, dataEnd);
+            //         }
+            //     }
+            //     else {
+            //         return "";
+            //     }
+            // }
+
+            // function parseFeedbackText (aMessage) {
+
+            // }
+
+            // function parseFeedbackClassification (aMessage) {
+                
+            // }
+
+            // function parseHelpLevel (aMessage) {
+
+            // }
+
+            // function parseTotalNumHints (aMessage) {
+
+            // }
+
+            // function parseSchool (aMessage) {
+
+            // }
+
+            // function parseClass (aMessage) {
+
+            // }
+
+            // function parseKCDefault (aMessage) {
+
+            // }
+
+            // function parseKCCategory (aMessage) {
+
+            // }
+
+            // function parseKCSingleKC (aMessage) {
+
+            // }
+
+            // function parseKCCategorySingleKC (aMessage) {
+
+            // }
+
+            // function parseKCUniqueStep (aMessage) {
+                
+            // }
+
+            // function parseKCCategoryUniqueStep (aMessage) {
+
+            // }  
+
+            // function parseProbability (aMessage)
+            // {
+            //     var start = "skill probability=";
+            //     var end = ">";
+            //     var minLen = start.length;
+            //     var startIndex = aMessage.indexOf(start) + minLen+1;
+            //     var endIndex = aMessage.indexOf(end, startIndex) - 1;
+            //     if ((startIndex != -1) && (endIndex - startIndex < 5)) {
+            //         return aMessage.slice(startIndex, endIndex);
+            //     }
+            //     else {
+            //         return ""
+            //     }
+            // }
+
+            /////////////////
+            // END PARSING //
+            /////////////////
+
+
+            
+
+        </script>
+    </head>
+
+    <body>
+        <div id="container">
+            <!--TOP PANEL-->
+            <div id="topPanel">
+                <!--TOP LEFT PANEL-->
+                <div id="HintWindow" class="CTATHintWindow"></div>
+                <!--TOP RIGHT PANEL-->
+                <div id="topRightPanel">
+                    <!--HINT BUTTON-->
+                    <div id="hint-button" class="CTATHintButton"></div>
+                    <!--DONE BUTTON-->
+                    <div id="done-button" class="CTATDoneButton"></div>
+                </div>
+            </div>
+
+            <!--MIDDLE PANEL-->
+            <div id="middlePanel">
+                <div class="problemText alignProblem">Please solve for x</div>
+                <div class="row">
+                    <div id="startLeft" class="CTATTextField"></div>
+                    <div class="equalsSign"> = </div>
+                    <div id="startRight" class="CTATTextField"></div>
+                </div>
+                <div class="problemText"></div>
+                <!--UNDO BUTTON-->
+                <div id="undo" class="CTATButton" data-ctat-show-feedback="false" data-ctat-disable-on-correct="false">Undo</div>
+            </div>
+
+            <!--BOTTOM PANEL-->
+            <div id="bottomPanel">
+
+                <div class="row">
+
+                    <div id="solve1Group" class="CTATGroupingComponent" data-ctat-use-componentlist="true" data-ctat-componentlist="solveLeft1,eq1,solveRight1"></div>
+                    
+                    <div id="solveLeft1" class="CTATTextInput leftTextColumn" ></div>
+                    <div id= "eq1" class="stepEqual"> = </div>
+                    <div id="solveRight1" class="CTATTextInput rightTextColumn"></div>
+
+
+                    <div id="postExpl1Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" style="visibility:hidden;">
+
+                        <div id="postExplOp1" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum1" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide1" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve2Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft2,eq2,solveRight2" style="visibility:hidden;">
+                    
+                        <div id="solveLeft2" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq2" class="stepEqual"> = </div>
+                        <div id="solveRight2" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl2Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp2,postExplNum2,postExplSide2" style="visibility:hidden;">
+
+                        <div id="postExplOp2" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum2" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide2" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve3Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft3,eq3,solveRight3" style="visibility:hidden;">
+                    
+                        <div id="solveLeft3" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq3" class="stepEqual"> = </div>
+                        <div id="solveRight3" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl3Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp3,postExplNum3,postExplSide3" style="visibility:hidden;">
+
+                        <div id="postExplOp3" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum3" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide3" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve4Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft4,eq4,solveRight4" style="visibility:hidden;">
+                    
+                        <div id="solveLeft4" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq4" class="stepEqual"> = </div>
+                        <div id="solveRight4" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl4Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp4,postExplNum4,postExplSide4" style="visibility:hidden;">
+
+                        <div id="postExplOp4" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum4" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide4" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve5Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft5,eq5,solveRight5" style="visibility:hidden;">
+                    
+                        <div id="solveLeft5" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq5" class="stepEqual"> = </div>
+                        <div id="solveRight5" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl5Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp5,postExplNum5,postExplSide5" style="visibility:hidden;">
+
+                        <div id="postExplOp5" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum5" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide5" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve6Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft6,eq6,solveRight6" style="visibility:hidden;">
+                    
+                        <div id="solveLeft6" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq6" class="stepEqual"> = </div>
+                        <div id="solveRight6" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl6Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp6,postExplNum6,postExplSide6" style="visibility:hidden;">
+
+                        <div id="postExplOp6" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum6" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide6" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve7Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft7,eq7,solveRight7" style="visibility:hidden;">
+                    
+                        <div id="solveLeft7" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq7" class="stepEqual"> = </div>
+                        <div id="solveRight7" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl7Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp7,postExplNum7,postExplSide7" style="visibility:hidden;">
+
+                        <div id="postExplOp7" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum7" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide7" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve8Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft8,eq8,solveRight8" style="visibility:hidden;">
+                    
+                        <div id="solveLeft8" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq8" class="stepEqual"> = </div>
+                        <div id="solveRight8" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl8Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp8,postExplNum8,postExplSide8" style="visibility:hidden;">
+
+                        <div id="postExplOp8" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum8" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide8" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve9Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft9,eq9,solveRight9" style="visibility:hidden;">
+                    
+                        <div id="solveLeft9" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq9" class="stepEqual"> = </div>
+                        <div id="solveRight9" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl9Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp9,postExplNum9,postExplSide9" style="visibility:hidden;">
+
+                        <div id="postExplOp9" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum9" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide9" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve10Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft10,eq10,solveRight10" style="visibility:hidden;">
+                    
+                        <div id="solveLeft10" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq10" class="stepEqual"> = </div>
+                        <div id="solveRight10" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl10Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp10,postExplNum10,postExplSide10" style="visibility:hidden;">
+
+                        <div id="postExplOp10" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum10" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide10" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solv11Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft11,eq11,solveRight11" style="visibility:hidden;">
+                    
+                        <div id="solveLeft11" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq11" class="stepEqual"> = </div>
+                        <div id="solveRight11" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl11Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp11,postExplNum11,postExplSide11" style="visibility:hidden;">
+
+                        <div id="postExplOp11" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum11" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide11" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve12Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft12,eq12,solveRight12" style="visibility:hidden;">
+                    
+                        <div id="solveLeft12" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq12" class="stepEqual"> = </div>
+                        <div id="solveRight12" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl12Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp12,postExplNum12,postExplSide12" style="visibility:hidden;">
+
+                        <div id="postExplOp12" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum12" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide12" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve13Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft13,eq13,solveRight13" style="visibility:hidden;">
+                    
+                        <div id="solveLeft13" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq13" class="stepEqual"> = </div>
+                        <div id="solveRight13" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl13Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp13,postExplNum13,postExplSide13" style="visibility:hidden;">
+
+                        <div id="postExplOp13" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum13" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide13" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div id="solve14Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="solveLeft14,eq14,solveRight14" style="visibility:hidden;">
+                    
+                        <div id="solveLeft14" class="CTATTextInput leftTextColumn" ></div>
+                        <div id= "eq14" class="stepEqual"> = </div>
+                        <div id="solveRight14" class="CTATTextInput rightTextColumn"></div>
+
+                    </div>
+
+                    <div id="postExpl14Group" class="CTATGroupingComponent" data-ctat-use-componentlist="false" data-ctat-componentlist="postExplOp14,postExplNum14,postExplSide14" style="visibility:hidden;">
+
+                        <div id="postExplOp14" class="CTATComboBox" >
+                            <option>What did you do</option>
+                            <option>Added</option>
+                            <option>Subtracted</option>
+                            <option>Multiplied</option>
+                            <option>Divided</option>
+                            <option>Combined Like Terms</option>
+                            <option>Distributed</option>
+                        </div>
+
+                        <div id="postExplNum14" class="CTATTextInput middleTextColumn"></div>
+
+                        <div id="postExplSide14" class="CTATComboBox" >
+                            <option>to which side</option>
+                            <option>to the right side</option>
+                            <option>to the left side</option>
+                            <option>to/from both sides</option>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>

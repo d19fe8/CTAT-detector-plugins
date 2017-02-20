@@ -1,0 +1,48 @@
+<html>
+<head>
+
+<script src="Assets/papaparse.min.js"></script>
+<script src="Test_Rig.js"></script>
+
+<script>
+	parseConfig = {
+					delimiter: "",	// auto-detect
+					newline: "",	// auto-detect
+					quoteChar: '"',
+					header: false,
+					dynamicTyping: false,
+					preview: 0,
+					encoding: "",
+					worker: false,
+					comments: false,
+					step: function(results, parser) {
+							simulateDataStream(results,parser)
+						},
+					complete: undefined,
+					error: undefined,
+					download: false,
+					skipEmptyLines: false,
+					chunk: undefined,
+					fastMode: undefined,
+					beforeFirstChunk: undefined,
+					withCredentials: undefined
+				};
+
+	function runSimulation(){
+		inputFilePath = document.getElementById('fileItem').files[0];
+		Papa.parse(inputFilePath, parseConfig);
+	}
+</script>
+
+</head>
+
+<body>
+
+	<input id="fileItem" type="file">
+	<p>
+	<input id="runButton" type="button" value="Run" onclick="runSimulation();" />
+
+</body>
+
+
+</html>
