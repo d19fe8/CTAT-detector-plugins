@@ -68,23 +68,14 @@ ________________________________
 
 ## In-development detectors
 
-- **Bayesian Knowledge Tracing (BKT)**
-	- **Standard BKT**
-		- Description:
-		- Outputs:
-	- Variant 1
-		- Description:
-		- Outputs:
-	- Variant 2
-		- Description:
-		- Outputs:
-	...
+- **error categorizers**
+[Documentation](https://github.com/d19fe8/CTAT-detector-plugins/tree/master/HTML/Assets/Detectors/error_categorizers)
+
+- **BKT models**
+[Documentation](https://github.com/d19fe8/CTAT-detector-plugins/tree/master/HTML/Assets/Detectors/bkt_models)
 
 - **help-seeking models**
 [Documentation](https://github.com/d19fe8/CTAT-detector-plugins/tree/master/HTML/Assets/Detectors/help_models)
-
-- **error categorizers**
-[Documentation](https://github.com/d19fe8/CTAT-detector-plugins/tree/master/HTML/Assets/Detectors/error_categorizers)
 ________________________________
 
 ## Detector wishlist
