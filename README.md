@@ -8,10 +8,11 @@ ________________________________
 **Detectors:** <br/> 
 - [Most stable detectors](#moststable) <br/> 
 - [In-development](#indevelopment) <br/> 
+- [Detector wishlist](#wishlist)
 
 
 
-<a name="ctatmain"></a> <a name="upcoming"></a> <a name="moststable"></a> <a name="indevelopment"></a> <a name="howtotest"></a>
+<a name="ctatmain"></a> <a name="upcoming"></a> <a name="moststable"></a> <a name="indevelopment"></a> <a name="howtotest"></a> <a name="wishlist"></a>
 
 **Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/> 
 _______________________________
@@ -80,150 +81,13 @@ ________________________________
 	...
 
 - **help-seeking models**
-	- Current help-seeking models include
-		1. **Original help-seeking model**: explicitly diagnose not only when an action is **[preferred / acceptable / not acceptable / ask teacher for help]** but also when it is **[help abuse / help avoidance]**
-			- Description:
-			- Outputs: "\<action evaluation>/\<action type>" (e.g., "preferred/try step" or "not acceptable/help avoidance")
-		2. **Original "bottom-out hints as worked examples" model**
-			- Description:
-			- Outputs:
-		3. **New** variant on help-seeking model: expanded considerations of **when to ask for help from teacher** (representing various hypotheses of when teacher help might be most effective)
-			- Variant 1
-				- Description:
-				- Outputs:
-			- Variant 2
-				- Description:
-				- Outputs:
-			- ...
-		4. **New** variants help-seeking model: **modifications based on recent "Help Helps" paper**
-			- Try step is preferred for low-skill steps (re: Ido, 2014)
-				- Variant 1.1
-					- Description:
-					- Outputs:
-				- Variant 1.2
-					- Description:
-					- Outputs:
-					- Validation:
-			- Variant 2
-				- Variant 2.1
-					- Description:
-					- Outputs:
-					- Validation:
-				- Variant 2.2
-					- Description:
-					- Outputs:
-					- Validation:
-			- Variant 3
-				- Description:
-				- Outputs:
-			- ...
-		- ...
-		
-		- Validation: these model variants were compared on \<dataset_names> using \<local-quantitative / pre-post-quantitative / usablity studies>, with results shown in the following table:
-		\<insert table>
+[Documentation](https://github.com/d19fe8/CTAT-detector-plugins/tree/master/HTML/Assets/Detectors/help_models)
 
-- **error categorizer:** 
-	- Description: keeps a count of student errors, categorized under a particular canonicalization scheme
-	- Outputs: mapping from observed student error categories to
-		- running, per-student count of observations
-		- raw examples (i.e., non-canonicalized)
-	- Potential extensions: 
-		- Recency (i.e., decay function)
-		- associate every update from an **error categorizer** with a reference to the particular problem instance (I believe this is already included on TutorShop's end)
-	- Current canonicalization schemes include:
-		- Simple canonicalization: line-to-line transition representation
-			- **Example 1**
-				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
-				- output:  x + a = b    ->   x + a - a = b
-			- **Example 2**
-				- input:   x + 6 = 15 -> 6 = 15
-				- output:  x + a = b  -> a = b
-			- **Example 3**
-				- input:    x + 6 = 15 -> x = 15 + 6
-				- output:   x + a = b  -> x = b + a
-			
-		- Simple canonicalization: track changes
-			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.14.46%20PM.png)
-			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.18.39%20PM.png)
-			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.23.10%20PM.png)
-			
-			- **Example 1**
-				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
-				- output:  x + a **- a** = b
-			- **Example 2**
-				- input:   x + 6 = 15 -> 6 = 15 
-				- output:  **[x +]** a = b
-			- **Example 3**
-				- input:   x + 6 = 15 -> x = 15 + 6
-				- output:  x **[+ 6]** = 15 **+ 6**
-			
-		- Change-based canonicalization: an extra layer over "track changes", which shows **only what changes between two lines in Lynnette** (and thus produces **fewer** categories, more focused on abstract **transformations**)
-		
-			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.24.00%20PM.png)
-		
-			- **Example 1**
-				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
-				- output:  ... - a = ...
-			- **Example 2**
-				- input:   x + 6 = 15 -> 6 = 15
-				- output:  [x] ... = ...
-			- **Example 3**
-				- input:    x + 6 + 3 = 15 -> x + 3 = 15 + 6
-				- output:   ... [+ 6] ... = ... + 6
-			- **Example 4**
-				- input:    x + 6 + 3 - 2 = 15 -> x + 6 + 3 - 2 = 15 + 6
-				- output:   ... [+ 6] ... = ... + 6
-			
-	- In-development canonicalization schemes include:
-		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
-			- **Example 1**
-				- input:  
-				- output:
-			- **Example 2**
-				- input:  
-				- output:
-			- **Example 3**
-				- input:  
-				- output:
-		- Inferred misconceptions (verbal category descriptions, which DO infer underlying misconceptions)
-			- Misconception labeling scheme 1
-				- **Example 1**
-					- input:  
-					- output:
-				- **Example 2**
-					- input:  
-					- output:
-				- **Example 3**
-					- input:  
-					- output:
-			- Misconception labeling scheme 2
-				- **Example 1**
-					- input:  
-					- output:
-				- **Example 2**
-					- input:  
-					- output:
-				- **Example 3**
-					- input:  
-					- output:
-			- Misconception labeling scheme 3
-				- **Example 1**
-					- input:  
-					- output:
-				- **Example 2**
-					- input:  
-					- output:
-				- **Example 3**
-					- input:  
-					- output:
-			- ....
-			
-	- Don't like any of the above canonicalization schemes (and/or misconception labeling schemes)? Please contribute to this collection by creating your own canonicalization function, and feel free to use one of our examples as a guiding template.
-
-
+- **error categorizers**
+[Documentation](https://github.com/d19fe8/CTAT-detector-plugins/tree/master/HTML/Assets/Detectors/error_categorizers)
 ________________________________
 
-**For the future:**
+## Detector wishlist
 	
 - at least one variant of BKT and at least one BKT-driven detector
 	- predictive stability
