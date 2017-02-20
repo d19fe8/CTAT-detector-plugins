@@ -5,9 +5,12 @@ ________________________________
 [Link to CTAT main repository](#ctatmain) <br/> 
 [Upcoming features](#upcoming) <br/> 
 [Most stable detectors](#moststable) <br/> 
-[In-development](#indevelopment)  
+[In-development](#indevelopment) <br/> 
+[How to test in running tutors](#howtotest)
 
-<a name="ctatmain"></a> <a name="upcoming"></a> <a name="moststable"></a> <a name="indevelopment"></a>
+
+
+<a name="ctatmain"></a> <a name="upcoming"></a> <a name="moststable"></a> <a name="indevelopment"></a> <a name="howtotest"></a>
 
 **Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/> 
 _______________________________
