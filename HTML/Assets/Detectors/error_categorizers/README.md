@@ -1,7 +1,7 @@
 **Documentation and to-do items for error categorizers**
 
 
-**Documentation (to update)**
+- **Documentation (to update)**
 	- Description: keeps a count of student errors, categorized under a particular canonicalization scheme, and may also keep track of concrete examples of student errors
 	- Outputs: mapping from observed student error categories to
 		- running, per-student count of observations
@@ -20,12 +20,12 @@
 			- **Example 3**
 				- input:    x + 6 = 15 -> x = 15 + 6
 				- output:   x + a = b  -> x = b + a
-			
+
 		- Simple canonicalization: track changes
 			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.14.46%20PM.png)
 			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.18.39%20PM.png)
 			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.23.10%20PM.png)
-			
+
 			- **Example 1**
 				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
 				- output:  x + a **- a** = b
@@ -35,11 +35,11 @@
 			- **Example 3**
 				- input:   x + 6 = 15 -> x = 15 + 6
 				- output:  x **[+ 6]** = 15 **+ 6**
-			
+
 		- Change-based canonicalization: an extra layer over "track changes", which shows **only what changes between two lines in Lynnette** (and thus produces **fewer** categories, more focused on abstract **transformations**)
-		
+
 			- ![example](https://raw.githubusercontent.com/d19fe8/CTAT-detector-plugins/master/Screen%20Shot%202017-01-22%20at%204.24.00%20PM.png)
-		
+
 			- **Example 1**
 				- input:   x + 6 = 15   ->   x + 6 - 6 = 15
 				- output:  ... - a = ...
@@ -52,7 +52,7 @@
 			- **Example 4**
 				- input:    x + 6 + 3 - 2 = 15 -> x + 6 + 3 - 2 = 15 + 6
 				- output:   ... [+ 6] ... = ... + 6
-			
+
 	- In-development canonicalization schemes include:
 		- Labeled error categories (verbal category descriptions, which DO NOT infer underlying misconceptions)
 			- **Example 1**
