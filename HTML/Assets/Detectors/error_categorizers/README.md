@@ -1,4 +1,4 @@
-## Documentation and to-do items for error categorizers
+**Documentation and to-do items for error categorizers**
 
 
 **Documentation (to update)**
