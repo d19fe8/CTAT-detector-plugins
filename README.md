@@ -2,17 +2,14 @@
 ________________________________
 
 ## Table of Contents  
-[Link to CTAT main repository](#ctatmain)   
-[Upcoming features](#upcoming)
-[Most stable detectors](#moststable)
-[In development](#indevelopment)  
+[Link to CTAT main repository](#ctatmain) <br/> 
+[Upcoming features](#upcoming) <br/> 
+[Most stable detectors](#moststable) <br/> 
+[In-development](#indevelopment)  
 
-<a name="ctatmain"/>
-<a name="upcoming"/>
-<a name="moststable"/>
-<a name="indevelopment"/>
+<a name="ctatmain"></a> <a name="upcoming"></a> <a name="moststable"></a> <a name="indevelopment"></a>
 
-**Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under <a name="moststable"/>
+**Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/> 
 _______________________________
 
 ## Link to CTAT main repository
