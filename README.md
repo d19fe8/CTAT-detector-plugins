@@ -61,7 +61,7 @@ ________________________________
 	- Outputs: the running count of attempts on **the most recent step the student has worked on** (e.g., if a student has tried 30 times on a particular interface element, the output will be "30")
 
 - **stagnation**
-	- Description: outputs alerts after 
+	- Description: outputs alerts in response to fixed, user-specified thresholds on student idle time
 	- Outputs: custom message after each specified time-interval (e.g., "idle for more than 30 seconds", "idle for more than 1 minute", "idle for more than 2 minutes")
 
 ________________________________
