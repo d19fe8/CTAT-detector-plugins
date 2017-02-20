@@ -1,12 +1,15 @@
 # CTAT-detector-plugins
 
-**Note: in general, detectors in this repository are currently still under development**
+**Note: in general, detectors in this repository are currently still under development! To get a sense of how "in development" a particular detector is, see below**
 ________________________________
 
-**CTAT main repository**
+##### Table of Contents  
+[Link to CTAT main repository](#ctatmain)   
+<a name="ctatmain"/>
+_______________________________
 
+## Link to CTAT main repository
 https://github.com/CMUCTAT/CTAT
-
 ________________________________
 
 Forward transactions to external listeners running in other Worker
