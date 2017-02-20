@@ -12,10 +12,6 @@ ________________________________
 **Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/> 
 _______________________________
 
-## Link to CTAT main repository
-https://github.com/CMUCTAT/CTAT
-________________________________
-
 ## Upcoming features
 
 - **integrated detector development and testing tools** (...placeholder until we have a better/shorter name for this :) )
