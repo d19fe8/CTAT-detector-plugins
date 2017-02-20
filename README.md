@@ -3,12 +3,11 @@ ________________________________
 
 ## Table of Contents  
 [Upcoming features](#upcoming) <br/> 
+[How to test in running tutors](#howtotest)
 
-**Detectors** <br/> 
+**Detectors:** <br/> 
 - [Most stable detectors](#moststable) <br/> 
 - [In-development](#indevelopment) <br/> 
-
-[How to test in running tutors](#howtotest)
 
 
 
