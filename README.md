@@ -19,15 +19,11 @@ _______________________________
 
 ## Upcoming features
 
-- **integrated detector development and testing tools** (...placeholder until we have a better/shorter name for this :) )
+- **A cure for detector amnesia: Working initialization of detectors from TutorShop**
 
-- **working initialization of detectors from TutorShop (i.e., detector memory across problems)**
+- **Aggregator API**
 
-- **aggregator API**
-
-- **API for dashboard-TutorShop communication, and dashboard development templates**
-
-- **demo of "detector-chaining"**
+- **Integrated detector development and testing tools**
 
 <!---
 	- **Motivation:** 
