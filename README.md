@@ -9,22 +9,24 @@ ________________________________
 - [In-development](#indevelopment) <br/> 
 - [Detector wishlist](#wishlist)
 
-
-
 <a name="ctatmain"></a> <a name="upcoming"></a> <a name="moststable"></a> <a name="indevelopment"></a> <a name="howtotest"></a> <a name="wishlist"></a>
 
-**Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/> 
+**Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/>
+
+_______________________________
+
+**New here? Try building your own real-time dashboard using this guide:** https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
 _______________________________
 
 ## Upcoming features
 
 - **Integrated detector development and testing tools**
 
-## New features
+## Recently added features
 
 - **A cure for detector amnesia: Working initialization of detectors from TutorShop**
 
-- **AggHouse: aggregator API [try building your own real-time dashboard using this guide: https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]**
+- **AggHouse: aggregator API**
 
 <!---
 	- **Motivation:** 
