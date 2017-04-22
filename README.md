@@ -19,15 +19,13 @@ _______________________________
 
 ## Upcoming features
 
-- **A cure for detector amnesia: Working initialization of detectors from TutorShop**
-
-- **Aggregator API**
-
 - **Integrated detector development and testing tools**
 
 ## New features
 
-- AggHouse: aggregator API [try building your own real-time dashboard: https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
+- **A cure for detector amnesia: Working initialization of detectors from TutorShop**
+
+- **AggHouse: aggregator API [try building your own real-time dashboard using this guide: https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]**
 
 <!---
 	- **Motivation:** 
