@@ -103,7 +103,7 @@ ________________________________
 		- Outputs:
 
 _______________________
-		
+<!--		
 ## How to test in running tutors
 
  To activate this feature, first provide an initialization parameter
@@ -145,3 +145,4 @@ _______________________
 
 _______________________
 
+--->
