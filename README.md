@@ -1,6 +1,9 @@
 # CTAT-detector-plugins
 ________________________________
 
+**New here? Try building your own real-time dashboard using this guide:** https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
+_______________________________
+
 ## Table of Contents  
 [Upcoming features](#upcoming) <br/> 
 
@@ -13,9 +16,6 @@ ________________________________
 
 **Note:** in general, detectors in this repository are currently still under development! Detectors that are currently most stable are listed under: [Most stable detectors](#moststable) <br/>
 
-_______________________________
-
-**New here? Try building your own real-time dashboard using this guide:** https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
 _______________________________
 
 ## Upcoming features
