@@ -17,13 +17,6 @@ var timerId
 var timerId2
 var timerId3
 
-//TO-DO: 
-// detector initialiization, and leave comment
-// showing user how not to initialize (or, if we decide to
-// initialize all detector variables by default, at startup...
-// I suppose this would mean showing user how to clear initialized
-// values upon the first transaction received?)
-
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -92,6 +85,29 @@ self.onmessage = function ( e ) {
     case "connectMailer":
 	mailer = e.ports[0];
 	mailer.onmessage = receive_transaction;
+	break;
+	case "initialize":
+		for (initItem in e.data.initializer){
+			if (e.data.initializer[initItem].name == variableName){
+				detector_output.history = e.data.initializer[initItem].history;
+				detector_output.value = e.data.initializer[initItem].value;
+			}
+		}
+
+		//optional: Below, specify conditions under which a detector
+		//should NOT remember their most recent value and history (using the variable "detectorForget"). 
+		//(e.g., setting the condition to "true" will mean that the detector 
+		// will always be reset between problems... and setting the condition to "false"
+		// means that the detector will never be reset between problems)
+		//
+		//
+		//
+		detectorForget = true;
+
+		if (detectorForget){
+			detector_output.history = "";
+			detector_output.value = 0;
+		}
 	break;
     default:
 	break;
