@@ -1,7 +1,7 @@
 # CTAT-detector-plugins
 ________________________________
 
-**New here? Try building your own real-time dashboard using this guide:** https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
+**New here? Try building your own real-time dashboard using this guide (note: this guide is a live document):** https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
 _______________________________
 
 ## Table of Contents  
