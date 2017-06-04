@@ -4,6 +4,8 @@ ________________________________
 **New here? Try building your own real-time dashboard using this guide (note: this guide is a live document):** https://docs.google.com/document/d/1irGzgmuuHgFhWENgWAdYaXeMdWN3MnzVe4dy6d3Gkyk/edit?usp=sharing]
 _______________________________
 
+![CTAT Analytics](https://github.com/d19fe8/CTAT-detector-plugins/blob/master/CTATMeetsLearningAnalytics_GIT.png)
+
 ## Table of Contents  
 [Upcoming features](#upcoming) <br/> 
 
