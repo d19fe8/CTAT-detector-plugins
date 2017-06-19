@@ -94,7 +94,7 @@ self.onmessage = function ( e ) {
 		//
 		//
 		//
-		detectorForget = true;
+		detectorForget = false;
 
 		if (detectorForget){
 			detector_output.history = "";

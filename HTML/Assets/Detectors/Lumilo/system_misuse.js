@@ -17,6 +17,28 @@ var mailer;
 
 //initialize any custom global variables for this detector here
 var prevStep = ""
+var windowSize = 15;
+var gamingThreshold = 5;
+var hintAbuseThreshold = 5; 
+var attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,0);
+
+function frequent_gaming(){
+
+}
+
+function frequent_hint_abuse(){
+
+}
+
+function hint_abuse_detector(){
+
+}
+
+function cognitive_gaming_detector(){
+
+}
+
+
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -91,7 +113,7 @@ self.onmessage = function ( e ) {
 		//
 		//
 		//
-		detectorForget = true;
+		detectorForget = false;
 
 		if (detectorForget){
 			detector_output.history = "";

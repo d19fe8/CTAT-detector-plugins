@@ -17,6 +17,11 @@ var mailer;
 
 //initialize any custom global variables for this detector here
 var prevStep = ""
+var attemptCorrect;
+var windowSize = 7;
+var threshold = 1;
+var attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,1);
+var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -38,14 +43,12 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 		//
-		//
-		//
-		//
-		//
-		var booleanValues = [0, 1];
-		var timeValues = ["> 25 s", "> 45 s", "> 1 min", "> 2 min", "> 5 min"];
-		detector_output.value = String(booleanValues[Math.floor(Math.random() * booleanValues.length)]) + "," +  String(timeValues[Math.floor(Math.random() * timeValues.length)]) ;
-
+		attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
+		attemptWindow.shift();
+		attemptWindow.push(attemptCorrect);
+		var sumCorrect = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
+		console.log(attemptWindow);
+		
 	}
 
 	//set conditions under which detector should update
@@ -55,11 +58,59 @@ function receive_transaction( e ){
 		detector_output.transaction_id = e.data.transaction_id;
 
 		//custom processing (insert code here)
-		//
-		//
-		//
-		//
-		//
+		if (detector_output.value=="0, > 0 s" && (sumCorrect <= threshold)){
+			detector_output.history = e.data.tool_data.tool_event_time
+			detector_output.value = "1, > 25 s"
+			detector_output.time = new Date();
+
+			timerId = setTimeout(function() { 
+		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.value = "1, > 45 s"
+		      detector_output.time = new Date();
+			  mailer.postMessage(detector_output);
+			  postMessage(detector_output);
+			  console.log("output_data = ", detector_output);  }, 
+		      20000)
+		    timerId2 = setTimeout(function() { 
+		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.value = "1, > 1 min"
+		      detector_output.time = new Date();
+			  mailer.postMessage(detector_output);
+			  postMessage(detector_output);
+			  console.log("output_data = ", detector_output);  }, 
+		      35000)
+		    timerId3 = setTimeout(function() { 
+		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.value = "1, > 2 min"
+		      detector_output.time = new Date();
+			  mailer.postMessage(detector_output);
+			  postMessage(detector_output);
+			  console.log("output_data = ", detector_output);  }, 
+		      95000)
+		    timerId4 = setTimeout(function() { 
+		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.value = "1, > 5 min"
+		      detector_output.time = new Date();
+			  mailer.postMessage(detector_output);
+			  postMessage(detector_output);
+			  console.log("output_data = ", detector_output);  }, 
+		      275000)
+
+		}
+		else if (detector_output.value!="0, > 0 s" && (sumCorrect <= threshold)){
+			detector_output.history = e.data.tool_data.tool_event_time;
+			detector_output.time = new Date();
+		}
+		else{
+			detector_output.value = "0, > 0 s";
+			detector_output.history = e.data.tool_data.tool_event_time
+			detector_output.time = new Date();
+
+			clearTimeout(timerId);
+			clearTimeout(timerId2);
+			clearTimeout(timerId3);
+			clearTimeout(timerId4);
+		}
 
 		mailer.postMessage(detector_output);
 		postMessage(detector_output);
@@ -92,7 +143,7 @@ self.onmessage = function ( e ) {
 		//
 		//
 		//
-		detectorForget = true;
+		detectorForget = false;
 
 		if (detectorForget){
 			detector_output.history = "";

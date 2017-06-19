@@ -8,7 +8,7 @@ TransactionMailerUsers =
     mailerPort: null,
     scripts: ["Detectors/Lumilo/idle.js", 
     "Detectors/Lumilo/system_misuse.js", 
-    "Detectors/Lumilo/struggle.js", 
+    "Detectors/Lumilo/struggle__moving_average.js", 
     "Detectors/Lumilo/student_doing_well__moving_average.js", 
     "Detectors/Lumilo/critical_struggle.js", 
     "Detectors/Lumilo/invisible_hand_raise.js"],

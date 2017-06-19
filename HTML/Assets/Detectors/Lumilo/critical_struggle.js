@@ -24,7 +24,7 @@ function frustrated_for_a_while(){
 }
 
 function confused_for_a_while(){
-	
+
 }
 
 function many_incorrects_on_current_problem(){
@@ -119,7 +119,7 @@ self.onmessage = function ( e ) {
 		//
 		//
 		//
-		detectorForget = true;
+		detectorForget = false;
 
 		if (detectorForget){
 			detector_output.history = "";
