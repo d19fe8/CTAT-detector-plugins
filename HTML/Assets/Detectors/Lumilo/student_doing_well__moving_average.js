@@ -17,6 +17,11 @@ var mailer;
 
 //initialize any custom global variables for this detector here
 var prevStep = ""
+var attemptCorrect;
+var windowSize = 7;
+var threshold = 6;
+var attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,0);
+
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -37,15 +42,11 @@ function receive_transaction( e ){
 		detector_output.step_id = e.data.tutor_data.step_id;
 
 		//custom processing (insert code here)
-		//
-		//
-		//
-		//
-		//
-		var booleanValues = [0, 1];
-			detector_output.value = String(booleanValues[Math.floor(Math.random() * booleanValues.length)]) ;
-
-
+		attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
+		attemptWindow.shift();
+		attemptWindow.push(attemptCorrect);
+		var sumCorrect = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
+		console.log(attemptWindow);
 	}
 
 	//set conditions under which detector should update
@@ -55,11 +56,12 @@ function receive_transaction( e ){
 		detector_output.transaction_id = e.data.transaction_id;
 
 		//custom processing (insert code here)
-		//
-		//
-		//
-		//
-		//
+		if (sumCorrect >= threshold){
+			detector_output.value = "1";
+		}
+		else{
+			detector_output.value = "0";
+		}
 
 		mailer.postMessage(detector_output);
 		postMessage(detector_output);
