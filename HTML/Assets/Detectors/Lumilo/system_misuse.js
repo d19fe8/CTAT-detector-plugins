@@ -43,7 +43,7 @@ function receive_transaction( e ){
 		//
 		//
 		var booleanValues = [0, 1];
-		detector_output.value = str(booleanValues[Math.floor(Math.random() * booleanValues.length)]) ;
+		detector_output.value = String(booleanValues[Math.floor(Math.random() * booleanValues.length)]) ;
 
 	}
 

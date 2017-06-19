@@ -6,7 +6,7 @@ TransactionMailerUsers =
     mailerURL: "mail-worker.js",
     mailer: null,
     mailerPort: null,
-    scripts: ["currentAttemptCount.js", "help_model_try_if_low.js"],
+    scripts: ["Detectors/Lumilo/idle.js", "Detectors/Lumilo/system_misuse.js", "Detectors/Lumilo/struggle.js", "Detectors/Lumilo/student_doing_well.js", "Detectors/Lumilo/critical_struggle.js", "Detectors/Lumilo/invisible_hand_raise.js"],
     active: []
 };
 

@@ -43,8 +43,8 @@ function receive_transaction( e ){
 		//
 		//
 		var booleanValues = [0, 1];
-		var timeValues = ["> 25 s" "> 45 s", "> 1 min", "> 2 min", "> 5 min"];
-		detector_output.value = str(booleanValues[Math.floor(Math.random() * booleanValues.length)]) + "," +  str(timeValues[Math.floor(Math.random() * timeValues.length)]) ;
+		var timeValues = ["> 25 s", "> 45 s", "> 1 min", "> 2 min", "> 5 min"];
+		detector_output.value = String(booleanValues[Math.floor(Math.random() * booleanValues.length)]) + "," +  String(timeValues[Math.floor(Math.random() * timeValues.length)]) ;
 
 	}
 

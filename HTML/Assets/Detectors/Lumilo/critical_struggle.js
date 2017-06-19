@@ -18,6 +18,36 @@ var mailer;
 //initialize any custom global variables for this detector here
 var prevStep = ""
 
+
+function frustrated_for_a_while(){
+
+}
+
+function confused_for_a_while(){
+	
+}
+
+function many_incorrects_on_current_problem(){
+
+}
+
+//no frustration detector currently included
+function detect_frustration(){
+
+
+	return false;
+}
+
+
+function detect_confusion(){
+
+}
+
+function detect_wheel_spinning(){
+
+}
+
+
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
 
@@ -40,8 +70,8 @@ function receive_transaction( e ){
 		//
 		//
 		var booleanValues = [0, 1];
-		var timeValues = ["> 25 s" "> 45 s", "> 1 min", "> 2 min", "> 5 min"];
-		detector_output.value = str(booleanValues[Math.floor(Math.random() * booleanValues.length)]) + "," +  str(timeValues[Math.floor(Math.random() * timeValues.length)]) ;
+		var timeValues = ["> 25 s", "> 45 s", "> 1 min", "> 2 min", "> 5 min"];
+		detector_output.value = String(booleanValues[Math.floor(Math.random() * booleanValues.length)]) + "," +  String(timeValues[Math.floor(Math.random() * timeValues.length)]) ;
 
 	}
 

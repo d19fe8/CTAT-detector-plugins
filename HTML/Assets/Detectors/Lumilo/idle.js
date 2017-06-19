@@ -16,7 +16,12 @@ var detector_output = {name: variableName,
 var mailer;
 
 //initialize any custom global variables for this detector here
-var prevStep = ""
+var prevStep = "";
+var timerId
+var timerId2
+var timerId3
+var timerId4
+var timerId5
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -37,33 +42,71 @@ function receive_transaction( e ){
 		detector_output.step_id = e.data.tutor_data.step_id;
 
 		//custom processing (insert code here)
-		//
-		//
-		//
-		//
-		//
-		var booleanValues = [0, 1];
-		var timeValues = ["> 25 s" "> 45 s", "> 1 min", "> 2 min", "> 5 min"];
-		detector_output.value = str(booleanValues[Math.floor(Math.random() * booleanValues.length)]) + "," +  str(timeValues[Math.floor(Math.random() * timeValues.length)]) ;
+		clearTimeout(timerId);
+	    clearTimeout(timerId2);
+	    clearTimeout(timerId3);
+	    clearTimeout(timerId4);
+	    clearTimeout(timerId5);
+
+		detector_output.history = e.data.tool_data.tool_event_time
+		detector_output.value = "0, > 0 s"
+		detector_output.time = new Date();
+		mailer.postMessage(detector_output);
+		postMessage(detector_output);
+		console.log("output_data = ", detector_output);
 
 	}
 
 	//set conditions under which detector should update
 	//external state and history
 	if(e.data.actor == 'student' && e.data.tool_data.action != "UpdateVariable"){
+
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
 
 		//custom processing (insert code here)
-		//
-		//
-		//
-		//
-		//
+		timerId = setTimeout(function() { 
+	      detector_output.history = e.data.tool_data.tool_event_time
+	      detector_output.value = "1, > 25 s"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output); }, 
+	      25000)
+	    timerId2 = setTimeout(function() { 
+	      detector_output.history = e.data.tool_data.tool_event_time
+	      detector_output.value = "1, > 45 s"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      45000)
+	    timerId3 = setTimeout(function() { 
+	      detector_output.history = e.data.tool_data.tool_event_time
+	      detector_output.value = "1, > 1 min"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      60000)
+	    timerId4 = setTimeout(function() { 
+	      detector_output.history = e.data.tool_data.tool_event_time
+	      detector_output.value = "1, > 2 min"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      120000)
+	    timerId5 = setTimeout(function() { 
+	      detector_output.history = e.data.tool_data.tool_event_time
+	      detector_output.value = "1, > 5 min"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      300000)
 
-		mailer.postMessage(detector_output);
-		postMessage(detector_output);
-		console.log("output_data = ", detector_output);
+
 	}
 }
 
