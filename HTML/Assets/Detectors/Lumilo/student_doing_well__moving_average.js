@@ -20,7 +20,7 @@ var prevStep = ""
 var attemptCorrect;
 var windowSize = 7;
 var threshold = 6;
-var attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,0);
+var attemptWindow;
 
 
 function receive_transaction( e ){
@@ -45,6 +45,8 @@ function receive_transaction( e ){
 		attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
 		attemptWindow.shift();
 		attemptWindow.push(attemptCorrect);
+		detector_output.history = JSON.stringify(attemptWindow);
+
 		var sumCorrect = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
 		console.log(attemptWindow);
 	}
@@ -100,6 +102,14 @@ self.onmessage = function ( e ) {
 			detector_output.history = "";
 			detector_output.value = 0;
 		}
+
+		if (detector_output.history == "" || detector_output.history == null){
+			attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,0);
+		}
+		else{
+			attemptWindow = JSON.parse(detector_output.history);
+		}
+
 	break;
     default:
 	break;
