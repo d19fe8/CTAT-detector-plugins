@@ -50,6 +50,21 @@ TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authTo
 	}
 	TransactionMailerUsers.active.push(detector);
 	console.log("TransactionMailerUsers.create(): s, active["+i+"]=", s, TransactionMailerUsers.active[i]);
+    
+    detector.onmessage = function(e) 
+        {
+            var sel = e.data.name;
+            var action = "UpdateVariable";
+            var input = e.data.value;
+
+            var sai = new CTATSAI();
+            sai.setSelection(sel);
+            sai.setAction(action);
+            sai.setInput(input)
+            CTATCommShell.commShell.processComponentAction(sai=sai, tutorComponent=false, aTrigger="tutor")
+        };
+
+
     }
     return TransactionMailerUsers;
 };
