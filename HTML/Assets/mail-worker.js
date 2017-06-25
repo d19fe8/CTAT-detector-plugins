@@ -77,7 +77,7 @@ setInterval(function()
 		xhttp.send( JSON.stringify(trans) );
 	}
 	else{
-		console.log("trans_Q is empty in mail_worker");
+		//console.log("trans_Q is empty in mail_worker");
 	}
 	
 	/* Send Detector results in queue */
@@ -102,6 +102,6 @@ setInterval(function()
 		xhttp.send( JSON.stringify(detect) );
 	}
 	else{
-		console.log("detector_Q is empty in mail-worker");
+		//console.log("detector_Q is empty in mail-worker");
 	}
-},1500);	//CHANGEME TO WHAT INTERVAL YOU WANT
+},200);	//CHANGEME TO WHAT INTERVAL YOU WANT
