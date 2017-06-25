@@ -15,8 +15,22 @@ var detector_output = {name: variableName,
 						};
 var mailer;
 
-//initialize any custom global variables for this detector here
-var prevStep = ""
+//declare any custom global variables that will be initialized 
+//based on "remembered" values across problem boundaries, here
+// (initialize these at the bottom of this file, inside of self.onmessage)
+//
+//
+//
+//
+//
+
+
+//declare and/or initialize any other custom global variables for this detector here
+//
+//
+//
+//
+//
 
 
 function frustrated_for_a_while(){
@@ -111,20 +125,41 @@ self.onmessage = function ( e ) {
 			}
 		}
 
-		//optional: Below, specify conditions under which a detector
+				//optional: In "detectorForget", specify conditions under which a detector
 		//should NOT remember their most recent value and history (using the variable "detectorForget"). 
 		//(e.g., setting the condition to "true" will mean that the detector 
 		// will always be reset between problems... and setting the condition to "false"
 		// means that the detector will never be reset between problems)
 		//
-		//
-		//
 		detectorForget = false;
+		//
+		//
 
 		if (detectorForget){
 			detector_output.history = "";
 			detector_output.value = 0;
 		}
+
+
+		//optional: If any global variables are based on remembered values across problem boundaries,
+		// these initializations should be written here
+		//
+		//
+		if (detector_output.history == "" || detector_output.history == null){
+			//in the event that the detector history is empty,
+			//initialize variables to your desired 'default' values
+			//
+			//
+		}
+		else{
+			//if the detector history is not empty, you can access it via:
+			//     JSON.parse(detector_output.history);
+			//...and initialize your variables to your desired values, based on 
+			//this history
+			//
+			//
+		}
+		
 	break;
     default:
 	break;

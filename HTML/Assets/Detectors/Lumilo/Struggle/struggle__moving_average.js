@@ -15,13 +15,18 @@ var detector_output = {name: variableName,
 						};
 var mailer;
 
-//initialize any custom global variables for this detector here
-var prevStep = ""
+
+//declare any custom global variables that will be initialized 
+//based on "remembered" values across problem boundaries, here
+// (initialize these at the bottom of this file, inside of self.onmessage)
+var attemptWindow;
+
+//declare and/or initialize any other custom global variables for this detector here
 var attemptCorrect;
 var windowSize = 7;
 var threshold = 1;
-var attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,1);
 var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
+
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -135,7 +140,7 @@ self.onmessage = function ( e ) {
 			}
 		}
 
-		//optional: Below, specify conditions under which a detector
+		//optional: In "detectorForget", specify conditions under which a detector
 		//should NOT remember their most recent value and history (using the variable "detectorForget"). 
 		//(e.g., setting the condition to "true" will mean that the detector 
 		// will always be reset between problems... and setting the condition to "false"
@@ -144,11 +149,26 @@ self.onmessage = function ( e ) {
 		//
 		//
 		detectorForget = false;
+		//
+		//
 
 		if (detectorForget){
 			detector_output.history = "";
 			detector_output.value = 0;
 		}
+
+
+		//optional: If any global variables are based on remembered values across problem boundaries,
+		// these initializations should be written here
+		//
+		//
+		if (detector_output.history == "" || detector_output.history == null){
+			attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,1);
+		}
+		else{
+			attemptWindow = JSON.parse(detector_output.history);
+		}
+
 	break;
     default:
 	break;
