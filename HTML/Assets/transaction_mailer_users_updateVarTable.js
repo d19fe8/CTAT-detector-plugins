@@ -3,15 +3,12 @@ TransactionMailerUsers =
     process_transactions_url: "",
     process_detectors_url: "",
     authenticity_token: "",
-    mailerURL: "mail-worker.js",
+    mailerURL: "mail-worker_updateVarTable.js",
     mailer: null,
     mailerPort: null,
-    scripts: ["Detectors/Lumilo/idle.js", 
-    "Detectors/Lumilo/system_misuse.js", 
-    "Detectors/Lumilo/struggle__moving_average.js", 
-    "Detectors/Lumilo/student_doing_well__moving_average.js", 
-    "Detectors/Lumilo/critical_struggle.js", 
-    "Detectors/Lumilo/invisible_hand_raise.js"],
+    scripts: ["Detectors/currentAttemptCount.js",
+    "Detectors/Lumilo/idle.js",
+    "Detectors/help_models/help_model_try_if_low.js"],
     active: []
 };
 
