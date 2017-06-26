@@ -22,7 +22,7 @@ var attemptWindow;
 var skillLevelsAttempts;
 
 //declare and/or initialize any other custom global variables for this detector here...
-var stepCounter;
+var stepCounter = {};
 var help_model_output;
 var help_variables = {"lastAction": "null",
 					  "lastActionTime": "",
@@ -36,8 +36,8 @@ var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
 var windowSize = 7;
 var threshold = 1;
 var wheelSpinningAttemptThreshold = 10; //following Beck and Gong's wheel-spinning work
-var errorThreshold = 3; //currently arbitrary
-var newStepThreshold = 3; //currently arbitrary
+var errorThreshold = 2; //currently arbitrary
+var newStepThreshold = 1; //currently arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
@@ -248,8 +248,10 @@ function updateHistory(e){
 function updateSkillLevelsAttempts(e, rawSkills, currStepCount){
 	for (var skill in rawSkills) {
 
-		if( (rawSkills[skill].name in skillLevelsAttempts) && (currStepCount==1) ){
-			skillLevelsAttempts[rawSkills[skill].name][0] += 1;
+		if( rawSkills[skill].name in skillLevelsAttempts ){
+			if(currStepCount==1){
+				skillLevelsAttempts[rawSkills[skill].name][0] += 1;
+			}
 			skillLevelsAttempts[rawSkills[skill].name][1] = parseFloat(rawSkills[skill].pKnown);
 		}
 		else{
