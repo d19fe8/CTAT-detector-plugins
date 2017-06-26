@@ -33,8 +33,7 @@ var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7; //arbitrary: need to tune
-var gamingThreshold = 1; //arbitrary: need to tune
-var hintAbuseThreshold = 1; //arbitrary: need to tune
+var threshold = 1; //arbitrary: need to tune
 var errorThreshold = 2; //currently arbitrary
 var newStepThreshold = 1; //currently arbitrary
 var familiarityThreshold = 0.4;
@@ -42,228 +41,40 @@ var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
 
 
-//
-//###############################
-//#####     Help model     ######
-//###############################
-//###############################
-//
-
-//non-controversial
-function lastActionIsHint(e){
-	if (help_variables.lastAction == "hint"){return true;}
-	else{return false;}
-}
-function lastActionIsError(e){
-	if (help_variables.lastAction == "error"){return true;}
-	else{return false;}
-}
-function seenAllHintLevels(e){
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "hint"){
-		if (e.data.tutor_data.selection in help_variables.seenAllHints){
-			return help_variables.seenAllHints[e.data.tutor_data.selection];
-		}
-		else{return false;}
-	}
-	else{
-		if (e.data.tool_data.selection in help_variables.seenAllHints){
-			return help_variables.seenAllHints[e.data.tool_data.selection];
-		}
-		else{return false;}
-	}
-}
-function isCorrect(e){
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "correct"){return true;}
-	else{return false;}
-}
-
-function secondsSinceLastAction(e){
-	var currTime = new Date();
-	diff = currTime.getTime() - help_variables.lastActionTime.getTime();
-	console.log("time elapsed: ", diff/1000)
-	return (diff / 1000);
-}
-
-//less controversial
-function isDeliberate(e){
-	var hintThreshold = (help_variables.lastHintLength/600)*60;
-
-	if (lastActionIsError(e)){
-		return (secondsSinceLastAction(e) > errorThreshold);
-	}
-	else if (lastActionIsHint(e)){
-		return (secondsSinceLastAction(e) > hintThreshold);
-	}
-	else{
-		return (secondsSinceLastAction(e) > newStepThreshold);
-	}
-}
-
-//more controversial...
-function isFamiliar(e){
-	var rawSkills = e.data.tutor_data.skills;
-	for (var property in rawSkills) {
-	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=familiarityThreshold){
-	        	return false;
-	        }
-	    }
-	}
-	return true;
-}
-
-function isLowSkillStep_All(e){
-	var rawSkills = e.data.tutor_data.skills;
-	for (var property in rawSkills) {
-	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)>=familiarityThreshold){
-	        	return false;
-	        }
-	    }
-	}
-	return true;
-}
-
-function isLowSkillStep_Some(e){
-	var rawSkills = e.data.tutor_data.skills;
-	for (var property in rawSkills) {
-	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=familiarityThreshold){
-	        	return true;
-	        }
-	    }
-	}
-	return false;
-}
-
-function hintIsHelpful(e){
-	return hintIsHelpfulPlaceholder;
-}
-function lastActionUnclearFix(e){
-	if (help_variables.lastSenseOfWhatToDo == false){return true;}
-	else{return false;}
-}
-function senseOfWhatToDo(e){
-	var sel = e.data.tutor_data.selection;
-	var rawSkills = e.data.tutor_data.skills;
-	for (var property in rawSkills) {
-	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=senseOfWhatToDoThreshold){
-	        	return false;
-	        }
-	    }
-	}
-	return true;
-}
-
-//evaluation of each step
-function evaluateAction(e){
-	var sel = e.data.tutor_data.selection;
-	var outcome = e.data.tutor_data.action_evaluation.toLowerCase();
-
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "hint"){
-		console.log("isHint")
-		if (isDeliberate(e)){
-			console.log("isDeliberate")
-			if (!seenAllHintLevels(e) &&
-				(!isFamiliar(e) 
-				|| (lastActionIsError(e) && lastActionUnclearFix(e)) 
-				|| (lastActionIsHint(e) && !hintIsHelpful(e))) ){
-				return "preferred/ask hint";
-			}
-			else if ( (isFamiliar(e) && !senseOfWhatToDo(e) ) 
-					|| (lastActionIsHint(e)) ){
-				return "acceptable/ask hint";
-			}
-			else{
-				return "not acceptable/hint abuse";
-			}
-			
-		}
-		else{
-		console.log("not deliberate")
-			return "not acceptable/hint abuse";
-		}
-
-	}
-	else{
-		if (isDeliberate(e)){
-			if ( (isFamiliar(e) && (!(lastActionIsError(e) && lastActionUnclearFix(e))) )
-				|| (lastActionIsHint(e) && hintIsHelpful(e))
-				 ){
-				return "preferred/try step";
-			}
-			else if (seenAllHintLevels(e) && 
-				     (!(lastActionIsError(e) && lastActionUnclearFix(e))) ){
-				return "preferred/try step";
-			}
-			else if (isCorrect(e)){
-				return "acceptable/try step";
-			}
-			else if (seenAllHintLevels(e)){
-				if (lastActionIsError(e) && lastActionUnclearFix(e)){
-					return "ask teacher for help/try step";
-				}
-			}
-			else{
-				return "not acceptable/hint avoidance";
-			}
-		}
-		else{
-			return "not acceptable/not deliberate";
-		}
-	}
-
-}
-
-function updateHistory(e){
-	help_variables.lastActionTime = new Date();
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "hint"){
-		help_variables.lastAction = "hint";
-		help_variables.lastHintLength = e.data.tutor_data.tutor_advice.split(' ').length;
-		if (help_variables.seenAllHints[e.data.tutor_data.selection] != true){
-			help_variables.seenAllHints[e.data.tutor_data.selection] = (e.data.tutor_data.current_hint_number == e.data.tutor_data.total_hints_available);
-		}
-	}
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
-		help_variables.lastAction = "error";
-	}
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "correct"){
-		help_variables.lastAction = "correct";
-	}
-
-	help_variables.lastSenseOfWhatToDo = senseOfWhatToDo(e);
-
-}
-
 
 function is_gaming(e){
 	return false;
 }
 
 function is_abusing_hints(help_model_output){
-	return (help_model_output == "not acceptable/hint abuse");
+	if (help_model_output == "hint abuse"){
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
 function is_not_deliberate(help_model_output){
-	return (help_model_output == "not acceptable/not deliberate");
+	if (help_model_output == "not deliberate"){
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
 
-//hint abuse detector params
-var help_variables = {"lastAction": "null",
-					  "lastActionTime": "",
-					  "seenAllHints": {},
-					  "lastHintLength": "",
-					  "lastSenseOfWhatToDo": false
-					 };
+//
+//
+//
+//############
+//############
+//############
+//############
+//
+//
 
-//TUNABLE PARAMETERS
-var errorThreshold = 3; //currently arbitrary
-var newStepThreshold = 3; //currently arbitrary
-var familiarityThreshold = 0.4;
-var senseOfWhatToDoThreshold = 0.6;
-var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
 
 //non-controversial
 function lastActionIsHint(e){
@@ -495,13 +306,19 @@ function receive_transaction( e ){
 			help_model_output = "preferred"; //first action in whole tutor is set to "preferred" by default
 		}
 
+		console.log(help_model_output);
+
 
 		var isGaming = is_gaming(e);
 		var isAbusingHints = is_abusing_hints(help_model_output);
 		var isNotDeliberate = is_not_deliberate(help_model_output);
 
+		console.log(isGaming);
+		console.log(isAbusingHints);
+		console.log(isNotDeliberate);
+
 		attemptWindow.shift();
-		attemptWindow.push( (isGaming || isAbusingHints || isWheelSpinning) ? 1 : 0 );
+		attemptWindow.push( (isGaming || isAbusingHints || isNotDeliberate) ? 1 : 0 );
 		var sumAskTeacherForHelp = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
 		console.log(attemptWindow);
 
