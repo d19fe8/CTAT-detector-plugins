@@ -64,12 +64,12 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 		if (detector_output.value=="0, > 0 s" && (sumCorrect <= threshold)){
-			detector_output.history = e.data.tool_data.tool_event_time
+			detector_output.history = JSON.stringify(attemptWindow);
 			detector_output.value = "1, > 25 s"
 			detector_output.time = new Date();
 
 			timerId = setTimeout(function() { 
-		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.history = JSON.stringify(attemptWindow);
 		      detector_output.value = "1, > 45 s"
 		      detector_output.time = new Date();
 			  mailer.postMessage(detector_output);
@@ -77,7 +77,7 @@ function receive_transaction( e ){
 			  console.log("output_data = ", detector_output);  }, 
 		      20000)
 		    timerId2 = setTimeout(function() { 
-		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.history = JSON.stringify(attemptWindow);
 		      detector_output.value = "1, > 1 min"
 		      detector_output.time = new Date();
 			  mailer.postMessage(detector_output);
@@ -85,7 +85,7 @@ function receive_transaction( e ){
 			  console.log("output_data = ", detector_output);  }, 
 		      35000)
 		    timerId3 = setTimeout(function() { 
-		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.history = JSON.stringify(attemptWindow);
 		      detector_output.value = "1, > 2 min"
 		      detector_output.time = new Date();
 			  mailer.postMessage(detector_output);
@@ -93,7 +93,7 @@ function receive_transaction( e ){
 			  console.log("output_data = ", detector_output);  }, 
 		      95000)
 		    timerId4 = setTimeout(function() { 
-		      detector_output.history = e.data.tool_data.tool_event_time
+		      detector_output.history = JSON.stringify(attemptWindow);
 		      detector_output.value = "1, > 5 min"
 		      detector_output.time = new Date();
 			  mailer.postMessage(detector_output);
@@ -103,12 +103,12 @@ function receive_transaction( e ){
 
 		}
 		else if (detector_output.value!="0, > 0 s" && (sumCorrect <= threshold)){
-			detector_output.history = e.data.tool_data.tool_event_time;
+			detector_output.history = JSON.stringify(attemptWindow);
 			detector_output.time = new Date();
 		}
 		else{
 			detector_output.value = "0, > 0 s";
-			detector_output.history = e.data.tool_data.tool_event_time
+			detector_output.history = JSON.stringify(attemptWindow);
 			detector_output.time = new Date();
 
 			clearTimeout(timerId);

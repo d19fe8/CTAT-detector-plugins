@@ -234,20 +234,11 @@ function updateHistory(e){
 
 }
 
-//TO-DO: 
-// detector initialiization, and leave comment
-// showing user how not to initialize (or, if we decide to
-// initialize all detector variables by default, at startup...
-// I suppose this would mean showing user how to clear initialized
-// values upon the first transaction received?)
 
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
 
-	//TEST CODE
-	//console.log("in detector1 with data:");
-	//console.log(e.data);
 
 	//set conditions under which transaction should be processed 
 	//(i.e., to update internal state and history, without 
@@ -269,7 +260,7 @@ function receive_transaction( e ){
 			detector_output.value = evaluateAction(e);
 		}
 		else{
-			detector_output.value = "preferred"; //may want to change this... currently means that the first action in any problem is always preferred
+			detector_output.value = "preferred";
 		}
 		updateHistory(e);
 		detector_output.history = help_variables;
