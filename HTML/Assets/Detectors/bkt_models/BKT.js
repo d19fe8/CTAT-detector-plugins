@@ -7,7 +7,7 @@ var variableName = "BKT"
 var detector_output = {name: variableName,
 						category: "Dashboard", 
 						value: "",
-						history: {},
+						history: "",
 						skill_names: "",
 						step_id: "",
 						transaction_id: "",
@@ -19,7 +19,10 @@ var mailer;
 //declare any custom global variables that will be initialized 
 //based on "remembered" values across problem boundaries, here
 // (initialize these at the bottom of this file, inside of self.onmessage)
-var BKTparams;
+var BKTparams = {p_transit: 0.2, 
+				p_slip: 0.1, 
+				p_guess: 0.2, 
+				p_know: 0.25};
 
 //declare and/or initialize any other custom global variables for this detector here...
 var pastSteps = {};
@@ -60,14 +63,6 @@ function clone(obj) {
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
-
-
-//TO-DO: 
-// detector initialiization, and leave comment
-// showing user how not to initialize (or, if we decide to
-// initialize all detector variables by default, at startup...
-// I suppose this would mean showing user how to clear initialized
-// values upon the first transaction received?)
 
 
 function receive_transaction( e ){
@@ -115,6 +110,9 @@ function receive_transaction( e ){
 				
 				detector_output.history[skill]["p_know"] = p_know_given_obs + (1 - p_know_given_obs)*p_transit;
 
+				//following TutorShop, round down to two decimal places
+				detector_output.history[skill]["p_know"] = Math.floor(detector_output.history[skill]["p_know"] * 100) / 100;
+
 				console.log("engine BKT: ", e.data.tutor_data.skills[0].pKnown);
 				console.log(detector_output.history[skill]["p_know"]);
 			}
@@ -133,9 +131,11 @@ function receive_transaction( e ){
 	if(e.data.actor == 'student' && e.data.tool_data.action != "UpdateVariable"){
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
+		detector_output.history = JSON.stringify(detector_output.history);
 		mailer.postMessage(detector_output);
 		postMessage(detector_output);
 		console.log("output_data = ", detector_output);
+		detector_output.history = JSON.parse(detector_output.history);
 	}
 }
 
@@ -180,10 +180,8 @@ self.onmessage = function ( e ) {
 			//in the event that the detector history is empty,
 			//initialize variables to your desired 'default' values
 			//
-			BKTparams = {p_transit: 0.2, 
-				p_slip: 0.1, 
-				p_guess: 0.2, 
-				p_know: 0.3};
+
+			detector_output.history = {};
 		}
 		else{
 			//if the detector history is not empty, you can access it via:
@@ -191,7 +189,7 @@ self.onmessage = function ( e ) {
 			//...and initialize your variables to your desired values, based on 
 			//this history
 			//
-			BKTparams = JSON.parse(detector_output.history);
+			detector_output.history = JSON.parse(detector_output.history);
 		}
 
 	break;

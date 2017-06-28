@@ -11,7 +11,8 @@ TransactionMailerUsers =
     "Detectors/Lumilo/struggle__moving_average.js", 
     "Detectors/Lumilo/student_doing_well__moving_average.js", 
     "Detectors/Lumilo/critical_struggle.js", 
-    "Detectors/Lumilo/invisible_hand_raise.js"],
+    "Detectors/Lumilo/invisible_hand_raise.js",
+    "Detectors/BKT.js"],
     active: []
 };
 

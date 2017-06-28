@@ -20,6 +20,8 @@ var mailer;
 // (initialize these at the bottom of this file, inside of self.onmessage)
 var attemptWindow;
 var skillLevelsAttempts;
+var intervalID;
+var onboardSkills;
 
 //declare and/or initialize any other custom global variables for this detector here...
 var stepCounter = {};
@@ -30,18 +32,22 @@ var help_variables = {"lastAction": "null",
 					  "lastHintLength": "",
 					  "lastSenseOfWhatToDo": false
 					 };
-var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
+var initTime;
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7;
 var threshold = 1;
+var BKTparams = {p_transit: 0.2, 
+				p_slip: 0.1, 
+				p_guess: 0.2, 
+				p_know: 0.25};
 var wheelSpinningAttemptThreshold = 10; //following Beck and Gong's wheel-spinning work
 var errorThreshold = 2; //currently arbitrary
 var newStepThreshold = 1; //currently arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
-
+var seedTime = 25;
 
 //
 //###############################
@@ -247,15 +253,16 @@ function updateHistory(e){
 
 function updateSkillLevelsAttempts(e, rawSkills, currStepCount){
 	for (var skill in rawSkills) {
-
-		if( rawSkills[skill].name in skillLevelsAttempts ){
-			if(currStepCount==1){
-				skillLevelsAttempts[rawSkills[skill].name][0] += 1;
+		if (rawSkills.hasOwnProperty(skill)){
+			if( skill in skillLevelsAttempts ){
+				if(currStepCount==1){
+					skillLevelsAttempts[skill][0] += 1;
+				}
+				skillLevelsAttempts[skill][1] = parseFloat(rawSkills[skill]["p_know"]);
 			}
-			skillLevelsAttempts[rawSkills[skill].name][1] = parseFloat(rawSkills[skill].pKnown);
-		}
-		else{
-			skillLevelsAttempts[rawSkills[skill].name] = [1, parseFloat(rawSkills[skill].pKnown)];
+			else{
+				skillLevelsAttempts[skill] = [1, parseFloat(rawSkills[skill]["p_know"])];
+			}
 		}
 	}
 }
@@ -266,6 +273,7 @@ function detect_wheel_spinning(e, rawSkills, currStepCount){
 
 	for (var skill in skillLevelsAttempts) {
 		if ((skillLevelsAttempts[skill][0] >= 10) && (skillLevelsAttempts[skill][1] < 0.95)){
+			console.log("is wheel spinning: " + skill.toString() + " " + skillLevelsAttempts[skill].toString());
 			return true;
 		}
 	}
@@ -280,6 +288,92 @@ function detect_wheel_spinning(e, rawSkills, currStepCount){
 //###############################
 //###############################
 //
+
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+
+function secondsSince(initTime){
+	var currTime = new Date();
+	diff = currTime.getTime() - initTime.getTime();
+	console.log("time elapsed: ", diff/1000);
+	return (diff / 1000);
+}
+
+function checkTimeElapsed(initTime) {
+  	var timeDiff = secondsSince(initTime);
+	if( timeDiff > (300-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+      detector_output.value = "1, > 5 min"
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else if( timeDiff > (120-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+      detector_output.value = "1, > 2 min"
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else if( timeDiff > (60-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+      detector_output.value = "1, > 1 min"
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+		else if( timeDiff > (45-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+      detector_output.value = "1, > 45 s"
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else{
+	  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+      detector_output.value = "1, > " + seedTime.toString() + " s"
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+}
 
 
 
@@ -310,8 +404,44 @@ function receive_transaction( e ){
 			help_model_output = "preferred"; //first action in whole tutor is set to "preferred" by default
 		}
 
+		//########  BKT  ##########
+		var currStep = e.data.tutor_data.selection;
+		for (var i in currSkills){
+			var skill = currSkills[i];
+
+			if(!(currStep in stepCounter)){
+				if (!(skill in onboardSkills)){	//if this skill has not been encountered before
+					onboardSkills[skill] = clone(BKTparams);
+				}
+
+				var p_know_tminus1 = onboardSkills[skill]["p_know"];
+				var p_slip = onboardSkills[skill]["p_slip"];
+				var p_guess = onboardSkills[skill]["p_guess"];
+				var p_transit = onboardSkills[skill]["p_transit"];
+
+				console.log(onboardSkills[skill]["p_know"]);
+
+
+				if (e.data.tutor_data.action_evaluation.toLowerCase()=="correct"){
+					var p_know_given_obs = (p_know_tminus1*(1-p_slip))/( (p_know_tminus1*(1-p_slip)) + ((1-p_know_tminus1)*p_guess) );
+				}
+				else{
+					var p_know_given_obs = (p_know_tminus1*p_slip)/( (p_know_tminus1*p_slip) + ((1-p_know_tminus1)*(1-p_guess)) );
+				}
+				
+				onboardSkills[skill]["p_know"] = p_know_given_obs + (1 - p_know_given_obs)*p_transit;
+
+				//following TutorShop, round down to two decimal places
+				onboardSkills[skill]["p_know"] = Math.floor(onboardSkills[skill]["p_know"] * 100) / 100;
+
+				console.log("engine BKT: ", e.data.tutor_data.skills[0].pKnown);
+				console.log(onboardSkills[skill]["p_know"]);
+			}
+
+		}
+
+
 		//keep track of num attempts on each step
-		currStep = e.data.tool_data.selection;
 		if(currStep in stepCounter){
 			stepCounter[currStep] += 1;
 		}
@@ -319,8 +449,9 @@ function receive_transaction( e ){
 			stepCounter[currStep] = 1;
 		}
 
+		//########################
 
-		var isWheelSpinning = detect_wheel_spinning(e, rawSkills, stepCounter[currStep]);
+		var isWheelSpinning = detect_wheel_spinning(e, onboardSkills, stepCounter[currStep]);
 
 		attemptWindow.shift();
 		attemptWindow.push( (help_model_output == "ask teacher for help/try step" || isWheelSpinning) ? 1 : 0 );
@@ -342,57 +473,24 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 		if (detector_output.value=="0, > 0 s" && (sumAskTeacherForHelp >= threshold)){
-			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
-			detector_output.value = "1, > 25 s"
+			initTime = new Date();
+			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+			detector_output.value = "1, > " + seedTime.toString() + " s";
 			detector_output.time = new Date();
 
-			timerId = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
-		      detector_output.value = "1, > 45 s"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      20000)
-		    timerId2 = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
-		      detector_output.value = "1, > 1 min"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      35000)
-		    timerId3 = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
-		      detector_output.value = "1, > 2 min"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      95000)
-		    timerId4 = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
-		      detector_output.value = "1, > 5 min"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      275000)
+			intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
 
 		}
 		else if (detector_output.value!="0, > 0 s" && (sumAskTeacherForHelp >= threshold)){
-			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
+			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
 			detector_output.time = new Date();
 		}
 		else{
 			detector_output.value = "0, > 0 s";
-			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts]);
+			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
 			detector_output.time = new Date();
 
-			clearTimeout(timerId);
-			clearTimeout(timerId2);
-			clearTimeout(timerId3);
-			clearTimeout(timerId4);
+			clearInterval(intervalID);
 		}
 
 
@@ -445,6 +543,7 @@ self.onmessage = function ( e ) {
 			//
 			attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,0);
 			skillLevelsAttempts = {};
+			onboardSkills = {};
 		}
 		else{
 			//if the detector history is not empty, you can access it via:
@@ -455,6 +554,12 @@ self.onmessage = function ( e ) {
 			var all_history = JSON.parse(detector_output.history);
 			attemptWindow = all_history[0];
 			skillLevelsAttempts = all_history[1];
+			initTime = new Date(all_history[2]);
+			onboardSkills = all_history[3];
+
+			if(detector_output.value!="0, > 0 s"){
+				intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
+			}
 		}
 		
 	break;

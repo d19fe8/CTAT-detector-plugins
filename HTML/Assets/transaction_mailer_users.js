@@ -6,12 +6,12 @@ TransactionMailerUsers =
     mailerURL: "mail-worker.js",
     mailer: null,
     mailerPort: null,
-    scripts: ["Detectors/Lumilo/Idle/idle.js", 
-    "Detectors/Lumilo/System_Misuse/system_misuse.js", 
-    "Detectors/Lumilo/Struggle/struggle__moving_average.js", 
-    "Detectors/Lumilo/Student_Doing_Well/student_doing_well__moving_average.js", 
-    "Detectors/Lumilo/Critical_Struggle/critical_struggle.js", 
-    "Detectors/Lumilo/Invisible_Hand_Raise/invisible_hand_raise.js"],
+    scripts: ["Detectors/Lumilo/idle.js", 
+    "Detectors/Lumilo/system_misuse.js", 
+    "Detectors/Lumilo/struggle__moving_average.js", 
+    "Detectors/Lumilo/student_doing_well__moving_average.js", 
+    "Detectors/Lumilo/critical_struggle.js", 
+    "Detectors/Lumilo/invisible_hand_raise.js"],
     active: []
 };
 

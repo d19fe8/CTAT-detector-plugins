@@ -34,7 +34,7 @@ var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7; //arbitrary: need to tune
 var threshold = 1; //arbitrary: need to tune
-var errorThreshold = 2; //currently arbitrary
+var errorThreshold = 1; //currently arbitrary
 var newStepThreshold = 1; //currently arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
