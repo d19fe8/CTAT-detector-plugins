@@ -33,6 +33,7 @@ var help_variables = {"lastAction": "null",
 					  "lastSenseOfWhatToDo": false
 					 };
 var initTime;
+var elaborationString;
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7;
@@ -452,6 +453,16 @@ function receive_transaction( e ){
 		//########################
 
 		var isWheelSpinning = detect_wheel_spinning(e, onboardSkills, stepCounter[currStep]);
+
+		if (isWheelSpinning){
+			elaborationString = "not improving on some skills";
+		}
+		else if (help_model_output == "ask teacher for help/try step"){
+			elaborationString = "hints aren't helping";
+		}
+		else{
+			elaborationString = "";
+		}
 
 		attemptWindow.shift();
 		attemptWindow.push( (help_model_output == "ask teacher for help/try step" || isWheelSpinning) ? 1 : 0 );
