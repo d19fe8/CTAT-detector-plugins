@@ -19,6 +19,9 @@ var mailer;
 //based on "remembered" values across problem boundaries, here
 // (initialize these at the bottom of this file, inside of self.onmessage)
 var attemptWindow;
+var initTime;
+var lastTrigger;
+var intervalID;
 
 //declare and/or initialize any other custom global variables for this detector here...
 var stepCounter = {};
@@ -29,7 +32,7 @@ var help_variables = {"lastAction": "null",
 					  "lastHintLength": "",
 					  "lastSenseOfWhatToDo": false
 					 };
-var timerId; var timerId2; var timerId3; var timerId4; var timerId5;
+var elaborationString;
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7; //arbitrary: need to tune
@@ -39,8 +42,61 @@ var newStepThreshold = 1; //currently arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
+var seedTime = 25;
+
+function secondsSince(initTime){	
+	var currTime = new Date();
+	diff = currTime.getTime() - initTime.getTime();
+	console.log("time elapsed: ", diff/1000)
+	return (diff / 1000);
+}
+
+function checkTimeElapsed(initTime) {
+  	var timeDiff = secondsSince(initTime);
+	if( timeDiff > (300-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+      detector_output.value = "1, > 5 min, " + elaborationString;
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else if( timeDiff > (120-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+      detector_output.value = "1, > 2 min, " + elaborationString;
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else if( timeDiff > (60-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+      detector_output.value = "1, > 1 min, " + elaborationString;
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else if( timeDiff > (45-seedTime) ){ 
+      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+      detector_output.value = "1, > 45 s, " + elaborationString;
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+	else{
+	  detector_output.history = JSON.stringify([attemptWindow, initTime]);
+      detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
+      detector_output.time = new Date();
+	  mailer.postMessage(detector_output);
+	  postMessage(detector_output);
+	  console.log("output_data = ", detector_output);  
+	}
+}
 
 
+//##############
 
 function is_gaming(e){
 	return false;
@@ -333,58 +389,47 @@ function receive_transaction( e ){
 		detector_output.transaction_id = e.data.transaction_id;
 
 		//custom processing (insert code here)
-		if (detector_output.value=="0, > 0 s" && (sumAskTeacherForHelp >= threshold)){
-			detector_output.history = JSON.stringify([attemptWindow]);
-			detector_output.value = "1, > 25 s"
+
+		if(isGaming){lastTrigger="isGaming"}
+		else if(isAbusingHints){lastTrigger="isAbusingHints"}
+		else{lastTrigger="isNotDeliberate?"}
+
+		//   elaboration string
+		if (sumAskTeacherForHelp>=threshold){
+			if (lastTrigger=="isGaming"){
+				elaborationString = "frequent guessing, not trying?";
+			}
+			else if (lastTrigger=="isAbusingHints"){
+				elaborationString = "abusing hints?";
+			}
+			else{
+				elaborationString = "fast attempts in a row, not deliberate?";
+			}
+		}
+		else{
+			elaborationString = "";
+		}
+
+
+		if (detector_output.value.split(',')[0]=="0" && (sumAskTeacherForHelp >= threshold)){
+			initTime = new Date();
+			detector_output.history = JSON.stringify([attemptWindow, initTime]);
+			detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
 			detector_output.time = new Date();
 
-			timerId = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow]);
-		      detector_output.value = "1, > 45 s"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      20000)
-		    timerId2 = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow]);
-		      detector_output.value = "1, > 1 min"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      35000)
-		    timerId3 = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow]);
-		      detector_output.value = "1, > 2 min"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      95000)
-		    timerId4 = setTimeout(function() { 
-		      detector_output.history = JSON.stringify([attemptWindow]);
-		      detector_output.value = "1, > 5 min"
-		      detector_output.time = new Date();
-			  mailer.postMessage(detector_output);
-			  postMessage(detector_output);
-			  console.log("output_data = ", detector_output);  }, 
-		      275000)
+			intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
 
 		}
-		else if (detector_output.value!="0, > 0 s" && (sumAskTeacherForHelp >= threshold)){
-			detector_output.history = JSON.stringify([attemptWindow]);
+		else if (detector_output.value.split(',')[0]!="0" && (sumAskTeacherForHelp >= threshold)){
+			detector_output.history = JSON.stringify([attemptWindow, initTime]);
 			detector_output.time = new Date();
 		}
 		else{
-			detector_output.value = "0, > 0 s";
-			detector_output.history = JSON.stringify([attemptWindow]);
+			detector_output.value = "0, > 0 s, " + elaborationString;
+			detector_output.history = JSON.stringify([attemptWindow, initTime]);
 			detector_output.time = new Date();
 
-			clearTimeout(timerId);
-			clearTimeout(timerId2);
-			clearTimeout(timerId3);
-			clearTimeout(timerId4);
+			clearInterval(intervalID);
 		}
 
 
@@ -445,6 +490,12 @@ self.onmessage = function ( e ) {
 			//
 			var all_history = JSON.parse(detector_output.history);
 			attemptWindow = all_history[0];
+			initTime = new Date(all_history[1]);
+			lastTrigger = all_history[2];
+
+			if(detector_output.value.split(',')[0]!="0"){
+				intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
+			}
 		}
 	break;
     default:

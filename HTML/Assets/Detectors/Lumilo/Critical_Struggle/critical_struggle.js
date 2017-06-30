@@ -325,10 +325,10 @@ function clone(obj) {
 }
 
 
-function secondsSince(initTime){
+function secondsSince(initTime){	
 	var currTime = new Date();
 	diff = currTime.getTime() - initTime.getTime();
-	console.log("time elapsed: ", diff/1000);
+	console.log("time elapsed: ", diff/1000)
 	return (diff / 1000);
 }
 
@@ -336,7 +336,7 @@ function checkTimeElapsed(initTime) {
   	var timeDiff = secondsSince(initTime);
 	if( timeDiff > (300-seedTime) ){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 5 min"
+      detector_output.value = "1, > 5 min, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
@@ -344,7 +344,7 @@ function checkTimeElapsed(initTime) {
 	}
 	else if( timeDiff > (120-seedTime) ){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 2 min"
+      detector_output.value = "1, > 2 min, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
@@ -352,15 +352,15 @@ function checkTimeElapsed(initTime) {
 	}
 	else if( timeDiff > (60-seedTime) ){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 1 min"
+      detector_output.value = "1, > 1 min, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-		else if( timeDiff > (45-seedTime) ){ 
+	else if( timeDiff > (45-seedTime) ){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 45 s"
+      detector_output.value = "1, > 45 s, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
@@ -368,7 +368,7 @@ function checkTimeElapsed(initTime) {
 	}
 	else{
 	  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > " + seedTime.toString() + " s"
+      detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
@@ -454,19 +454,11 @@ function receive_transaction( e ){
 
 		var isWheelSpinning = detect_wheel_spinning(e, onboardSkills, stepCounter[currStep]);
 
-		if (isWheelSpinning){
-			elaborationString = "not improving on some skills";
-		}
-		else if (help_model_output == "ask teacher for help/try step"){
-			elaborationString = "hints aren't helping";
-		}
-		else{
-			elaborationString = "";
-		}
-
+	
 		attemptWindow.shift();
 		attemptWindow.push( (help_model_output == "ask teacher for help/try step" || isWheelSpinning) ? 1 : 0 );
 		var sumAskTeacherForHelp = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
+
 		console.log(attemptWindow);
 		console.log(help_model_output);
 		console.log(isWheelSpinning);
@@ -483,21 +475,36 @@ function receive_transaction( e ){
 		detector_output.transaction_id = e.data.transaction_id;
 
 		//custom processing (insert code here)
-		if (detector_output.value=="0, > 0 s" && (sumAskTeacherForHelp >= threshold)){
+
+		//   elaboration string
+		if (sumAskTeacherForHelp>=threshold){
+			if (isWheelSpinning){
+				elaborationString = "slow to master some skills";
+			}
+			else{
+				elaborationString = "hints aren't helping";
+			}
+		}
+		else{
+			elaborationString = "";
+		}
+
+
+		if (detector_output.value.split(',')[0]=="0" && (sumAskTeacherForHelp >= threshold)){
 			initTime = new Date();
 			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-			detector_output.value = "1, > " + seedTime.toString() + " s";
+			detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
 			detector_output.time = new Date();
 
 			intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
 
 		}
-		else if (detector_output.value!="0, > 0 s" && (sumAskTeacherForHelp >= threshold)){
+		else if (detector_output.value.split(',')[0]!="0" && (sumAskTeacherForHelp >= threshold)){
 			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
 			detector_output.time = new Date();
 		}
 		else{
-			detector_output.value = "0, > 0 s";
+			detector_output.value = "0, > 0 s, " + elaborationString;
 			detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
 			detector_output.time = new Date();
 
@@ -568,7 +575,7 @@ self.onmessage = function ( e ) {
 			initTime = new Date(all_history[2]);
 			onboardSkills = all_history[3];
 
-			if(detector_output.value!="0, > 0 s"){
+			if(detector_output.value.split(',')[0]!="0"){
 				intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
 			}
 		}
