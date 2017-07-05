@@ -26,11 +26,11 @@ var mailer;
 
 
 //declare and/or initialize any other custom global variables for this detector here
-var timerId
-var timerId2
-var timerId3
-var timerId4
-var timerId5
+var timerId;
+var timerId2;
+var timerId3;
+var timerId4;
+var timerId5;
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -136,7 +136,7 @@ self.onmessage = function ( e ) {
 			}
 		}
 
-				//optional: In "detectorForget", specify conditions under which a detector
+		//optional: In "detectorForget", specify conditions under which a detector
 		//should NOT remember their most recent value and history (using the variable "detectorForget"). 
 		//(e.g., setting the condition to "true" will mean that the detector 
 		// will always be reset between problems... and setting the condition to "false"
@@ -147,29 +147,58 @@ self.onmessage = function ( e ) {
 		//
 
 		if (detectorForget){
-			detector_output.history = "";
-			detector_output.value = 0;
+			detector_output.history = "onLoad";
+			detector_output.value = "0, > 0 s";
 		}
 
 
-		//optional: If any global variables are based on remembered values across problem boundaries,
-		// these initializations should be written here
-		//
-		//
-		if (detector_output.history == "" || detector_output.history == null){
-			//in the event that the detector history is empty,
-			//initialize variables to your desired 'default' values
-			//
-			//
-		}
-		else{
-			//if the detector history is not empty, you can access it via:
-			//     JSON.parse(detector_output.history);
-			//...and initialize your variables to your desired values, based on 
-			//this history
-			//
-			//
-		}
+		detector_output.time = new Date();
+		mailer.postMessage(detector_output);
+		postMessage(detector_output);
+		console.log("output_data = ", detector_output);
+
+
+		timerId = setTimeout(function() { 
+	      detector_output.history = "onLoad"
+	      detector_output.value = "1, > 25 s"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output); }, 
+	      25000)
+	    timerId2 = setTimeout(function() { 
+	      detector_output.history = "onLoad"
+	      detector_output.value = "1, > 45 s"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      45000)
+	    timerId3 = setTimeout(function() { 
+	      detector_output.history = "onLoad"
+	      detector_output.value = "1, > 1 min"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      60000)
+	    timerId4 = setTimeout(function() { 
+	      detector_output.history = "onLoad"
+	      detector_output.value = "1, > 2 min"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      120000)
+	    timerId5 = setTimeout(function() { 
+	      detector_output.history = "onLoad"
+	      detector_output.value = "1, > 5 min"
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  }, 
+	      300000)
+
 
 	break;
     default:
