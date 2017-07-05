@@ -24,15 +24,33 @@ var attemptWindow;
 var attemptCorrect;
 var windowSize = 7;
 var threshold = 6;
+var stepCounter = {};
 
+
+function is_first_attempt(e){
+	
+	var currStep = e.data.tutor_data.selection;
+
+	if(currStep in stepCounter){
+		stepCounter[currStep] += 1;
+		return false;
+	}
+	else{
+		stepCounter[currStep] = 1;
+		return true;
+	}
+
+}
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
 
+	isFirstAttempt = is_first_attempt(e);
+
 	//set conditions under which transaction should be processed 
 	//(i.e., to update internal state and history, without 
 	//necessarily updating external state and history)
-	if(e.data.actor == 'student' && e.data.tool_data.action != "UpdateVariable"){
+	if(e.data.actor == 'student'  && isFirstAttempt == true && e.data.tool_data.action != "UpdateVariable"){
 		//do not touch
 		rawSkills = e.data.tutor_data.skills
 		var currSkills = []
@@ -52,11 +70,12 @@ function receive_transaction( e ){
 
 		var sumCorrect = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
 		console.log(attemptWindow);
+
 	}
 
 	//set conditions under which detector should update
 	//external state and history
-	if(e.data.actor == 'student' && e.data.tool_data.action != "UpdateVariable"){
+	if(e.data.actor == 'student' && isFirstAttempt == true && e.data.tool_data.action != "UpdateVariable"){
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
 

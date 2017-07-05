@@ -334,7 +334,8 @@ function secondsSince(initTime){
 
 function checkTimeElapsed(initTime) {
   	var timeDiff = secondsSince(initTime);
-	if( timeDiff > (300-seedTime) ){ 
+  	var currTimeMessage = detector_output.value.split(',')[1];
+	if( timeDiff > (300-seedTime) && currTimemessage!=" > 5 min"){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
       detector_output.value = "1, > 5 min, " + elaborationString;
       detector_output.time = new Date();
@@ -342,7 +343,7 @@ function checkTimeElapsed(initTime) {
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-	else if( timeDiff > (120-seedTime) ){ 
+	else if( timeDiff > (120-seedTime) && currTimemessage!=" > 2 min"){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
       detector_output.value = "1, > 2 min, " + elaborationString;
       detector_output.time = new Date();
@@ -350,7 +351,7 @@ function checkTimeElapsed(initTime) {
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-	else if( timeDiff > (60-seedTime) ){ 
+	else if( timeDiff > (60-seedTime) && currTimemessage!=" > 1 min"){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
       detector_output.value = "1, > 1 min, " + elaborationString;
       detector_output.time = new Date();
@@ -358,7 +359,7 @@ function checkTimeElapsed(initTime) {
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-	else if( timeDiff > (45-seedTime) ){ 
+	else if( timeDiff > (45-seedTime) && currTimemessage!=" > 45 s"){ 
       detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
       detector_output.value = "1, > 45 s, " + elaborationString;
       detector_output.time = new Date();
@@ -367,6 +368,7 @@ function checkTimeElapsed(initTime) {
 	  console.log("output_data = ", detector_output);  
 	}
 	else{
+		if(currTimemessage!=" > " + seedTime.toString() + " s")
 	  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
       detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
       detector_output.time = new Date();

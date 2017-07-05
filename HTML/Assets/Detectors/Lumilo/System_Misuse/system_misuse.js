@@ -37,8 +37,8 @@ var elaborationString;
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7; //arbitrary: need to tune
 var threshold = 1; //arbitrary: need to tune
-var errorThreshold = 1; //currently arbitrary
-var newStepThreshold = 1; //currently arbitrary
+var errorThreshold = 0.7; //currently somewhat arbitrary
+var newStepThreshold = 0.7; //currently somewhat arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
@@ -53,7 +53,8 @@ function secondsSince(initTime){
 
 function checkTimeElapsed(initTime) {
   	var timeDiff = secondsSince(initTime);
-	if( timeDiff > (300-seedTime) ){ 
+  	var currTimeMessage = detector_output.value.split(',')[1];
+	if( timeDiff > (300-seedTime) && currTimemessage!=" > 5 min"){ 
       detector_output.history = JSON.stringify([attemptWindow, initTime]);
       detector_output.value = "1, > 5 min, " + elaborationString;
       detector_output.time = new Date();
@@ -61,24 +62,24 @@ function checkTimeElapsed(initTime) {
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-	else if( timeDiff > (120-seedTime) ){ 
-      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+	else if( timeDiff > (120-seedTime) && currTimemessage!=" > 2 min"){ 
+	  detector_output.history = JSON.stringify([attemptWindow, initTime]);
       detector_output.value = "1, > 2 min, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-	else if( timeDiff > (60-seedTime) ){ 
-      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+	else if( timeDiff > (60-seedTime) && currTimemessage!=" > 1 min"){ 
+	  detector_output.history = JSON.stringify([attemptWindow, initTime]);
       detector_output.value = "1, > 1 min, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
 	  postMessage(detector_output);
 	  console.log("output_data = ", detector_output);  
 	}
-	else if( timeDiff > (45-seedTime) ){ 
-      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+	else if( timeDiff > (45-seedTime) && currTimemessage!=" > 45 s"){ 
+	  detector_output.history = JSON.stringify([attemptWindow, initTime]);
       detector_output.value = "1, > 45 s, " + elaborationString;
       detector_output.time = new Date();
 	  mailer.postMessage(detector_output);
@@ -86,6 +87,7 @@ function checkTimeElapsed(initTime) {
 	  console.log("output_data = ", detector_output);  
 	}
 	else{
+		if(currTimemessage!=" > " + seedTime.toString() + " s")
 	  detector_output.history = JSON.stringify([attemptWindow, initTime]);
       detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
       detector_output.time = new Date();
