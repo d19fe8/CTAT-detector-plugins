@@ -335,48 +335,60 @@ function secondsSince(initTime){
 function checkTimeElapsed(initTime) {
   	var timeDiff = secondsSince(initTime);
   	var currTimeMessage = detector_output.value.split(',')[1];
-	if( timeDiff > (300-seedTime) && currTimeMessage!=" > 5 min"){ 
-      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 5 min, " + elaborationString;
-      detector_output.time = new Date();
-	  mailer.postMessage(detector_output);
-	  postMessage(detector_output);
-	  console.log("output_data = ", detector_output);  
+  	console.log(currTimeMessage);
+	if( timeDiff > (300-seedTime)){ 
+		if (currTimeMessage!=" > 5 min"){ 
+	      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+	      detector_output.value = "1, > 5 min, " + elaborationString;
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  
+		}
 	}
-	else if( timeDiff > (120-seedTime) && currTimeMessage!=" > 2 min"){ 
-      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 2 min, " + elaborationString;
-      detector_output.time = new Date();
-	  mailer.postMessage(detector_output);
-	  postMessage(detector_output);
-	  console.log("output_data = ", detector_output);  
+	else if( timeDiff > (120-seedTime)){ 
+		if (currTimeMessage!=" > 2 min"){ 
+		  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+	      detector_output.value = "1, > 2 min, " + elaborationString;
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  
+		}
 	}
-	else if( timeDiff > (60-seedTime) && currTimeMessage!=" > 1 min"){ 
-      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 1 min, " + elaborationString;
-      detector_output.time = new Date();
-	  mailer.postMessage(detector_output);
-	  postMessage(detector_output);
-	  console.log("output_data = ", detector_output);  
+	else if( timeDiff > (60-seedTime)){
+	  if (currTimeMessage!=" > 1 min"){ 
+		  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+	      detector_output.value = "1, > 1 min, " + elaborationString;
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);
+	  }  
 	}
-	else if( timeDiff > (45-seedTime) && currTimeMessage!=" > 45 s"){ 
-      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > 45 s, " + elaborationString;
-      detector_output.time = new Date();
-	  mailer.postMessage(detector_output);
-	  postMessage(detector_output);
-	  console.log("output_data = ", detector_output);  
+	else if( timeDiff > (45-seedTime)){ 
+		if (currTimeMessage!=" > 45 s"){ 
+		  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+	      detector_output.value = "1, > 45 s, " + elaborationString;
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  
+		}
 	}
 	else{
-		if(currTimeMessage!=" > " + seedTime.toString() + " s")
-	  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
-      detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
-      detector_output.time = new Date();
-	  mailer.postMessage(detector_output);
-	  postMessage(detector_output);
-	  console.log("output_data = ", detector_output);  
+		console.log(currTimeMessage == " > " + seedTime.toString() + " s");
+		if(currTimeMessage!=" > " + seedTime.toString() + " s"){
+		  detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+	      detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);
+		}  
 	}
 }
+
 
 
 

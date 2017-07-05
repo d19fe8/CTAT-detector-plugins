@@ -45,7 +45,9 @@ function is_first_attempt(e){
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
 
-	isFirstAttempt = is_first_attempt(e);
+	if(e.data.actor == 'student'  && e.data.tool_data.selection !="done" && e.data.tool_data.action != "UpdateVariable"){
+		isFirstAttempt = is_first_attempt(e);
+	}
 
 	//set conditions under which transaction should be processed 
 	//(i.e., to update internal state and history, without 
