@@ -484,7 +484,7 @@ function receive_transaction( e ){
 
 	//set conditions under which detector should update
 	//external state and history
-	if(e.data.actor == 'student' && e.data.tool_data.action != "UpdateVariable"){
+	if(e.data.actor == 'student' && e.data.tool_data.selection !="done" && e.data.tool_data.action != "UpdateVariable"){
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
 
