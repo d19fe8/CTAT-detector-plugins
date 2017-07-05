@@ -50,7 +50,7 @@ function receive_transaction( e ){
 	//set conditions under which transaction should be processed 
 	//(i.e., to update internal state and history, without 
 	//necessarily updating external state and history)
-	if(e.data.actor == 'student'  && isFirstAttempt == true && e.data.tool_data.action != "UpdateVariable"){
+	if(e.data.actor == 'student'  && e.data.tool_data.selection !="done" && isFirstAttempt == true && e.data.tool_data.action != "UpdateVariable"){
 		//do not touch
 		rawSkills = e.data.tutor_data.skills
 		var currSkills = []
