@@ -220,6 +220,11 @@ self.onmessage = function ( e ) {
 			}
 		}
 
+		detector_output.time = new Date();
+		mailer.postMessage(detector_output);
+		postMessage(detector_output);
+		console.log("output_data = ", detector_output);
+
 	break;
     default:
 	break;

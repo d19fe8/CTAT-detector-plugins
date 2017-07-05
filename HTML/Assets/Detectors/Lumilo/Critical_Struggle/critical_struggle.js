@@ -593,6 +593,11 @@ self.onmessage = function ( e ) {
 				intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
 			}
 		}
+
+		detector_output.time = new Date();
+		mailer.postMessage(detector_output);
+		postMessage(detector_output);
+		console.log("output_data = ", detector_output);
 		
 	break;
     default:
