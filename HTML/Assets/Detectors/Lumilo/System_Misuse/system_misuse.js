@@ -37,8 +37,8 @@ var elaborationString;
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 7; //arbitrary: need to tune
 var threshold = 1; //arbitrary: need to tune
-var errorThreshold = 0.7; //currently somewhat arbitrary
-var newStepThreshold = 0.7; //currently somewhat arbitrary
+var errorThreshold = 2; //currently somewhat arbitrary
+var newStepThreshold = 1; //currently somewhat arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
@@ -335,8 +335,11 @@ function updateHistory(e){
 			help_variables.seenAllHints[e.data.tutor_data.selection] = (e.data.tutor_data.current_hint_number == e.data.tutor_data.total_hints_available);
 		}
 	}
-	if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
+	else if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
 		help_variables.lastAction = "error";
+	}
+	else{
+		help_variables.lastAction = "correct";	
 	}
 
 	help_variables.lastSenseOfWhatToDo = senseOfWhatToDo(e);
