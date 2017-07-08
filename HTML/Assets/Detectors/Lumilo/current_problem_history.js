@@ -1,10 +1,13 @@
-var variableName = "current_attempt_count"
+//detector template
+
+//add output variable name below
+var variableName = "current_problem_history"
 
 //initializations (do not touch)
 var detector_output = {name: variableName,
 						category: "Dashboard", 
-						value: 0,
-						history: {},
+						value: "0, none",
+						history: "",
 						skill_names: "",
 						step_id: "",
 						transaction_id: "",
@@ -21,13 +24,9 @@ var mailer;
 //
 //
 
-//declare and/or initialize any other custom global variables for this detector here...
+
+//declare and/or initialize any other custom global variables for this detector here
 //
-//
-//
-//
-//
-//[optional] single out TUNABLE PARAMETERS below
 //
 //
 //
@@ -52,18 +51,25 @@ function receive_transaction( e ){
 		detector_output.step_id = e.data.tutor_data.step_id;
 
 		//custom processing (insert code here)
-		currStep = e.data.tool_data.selection
+		//
+		//
+		//
+		//
+		//
+		var dummyStep1 = "3x + 3 = _____";
+		var dummyStep2 = "3x + 3 = 24";
+		var dummyStep3 = "3x + 3 = 24 \\n 3x = _____";
+		var dummyStep4 = "3x + 3 = 24 \\n 3x = 24 -3";
+		var dummyStep5 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = _____";
+		var dummyStep6 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21";
+		var dummyStep7 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21 \\n 3x [- 3] = _____";
 
-		if(currStep in detector_output.history){
-			//update detector output accordingly
-			detector_output.history[currStep] += 1;
-			detector_output.value = detector_output.history[currStep];
-		}
-		else{
-			//update detector output accordingly
-			detector_output.history[currStep] = 1;
-			detector_output.value = 1;
-		}
+		var dummyValue1 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3;
+		var dummyValue2 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3 + "," + dummyStep4 + "," +dummyStep5 + "," + dummyStep6 + "," + dummyStep7;
+
+		var dummyValues = [dummyValue1, dummyValue2];
+		detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
+
 
 	}
 
@@ -72,6 +78,14 @@ function receive_transaction( e ){
 	if(e.data.actor == 'student' && e.data.tool_data.action != "UpdateVariable"){
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
+
+		//custom processing (insert code here)
+		//
+		//
+		//
+		//
+		//
+
 		mailer.postMessage(detector_output);
 		postMessage(detector_output);
 		console.log("output_data = ", detector_output);
@@ -84,8 +98,8 @@ self.onmessage = function ( e ) {
     switch( e.data.command )
     {
     case "connectMailer":
-	mailer = e.ports[0];
-	mailer.onmessage = receive_transaction;
+		mailer = e.ports[0];
+		mailer.onmessage = receive_transaction;
 	break;
 	case "initialize":
 		for (initItem in e.data.initializer){
@@ -106,7 +120,7 @@ self.onmessage = function ( e ) {
 		//
 
 		if (detectorForget){
-			detector_output.history = {};
+			detector_output.history = "";
 			detector_output.value = 0;
 		}
 
@@ -130,10 +144,10 @@ self.onmessage = function ( e ) {
 			//
 		}
 
-
 	break;
     default:
 	break;
-    }
-}
 
+    }
+
+}

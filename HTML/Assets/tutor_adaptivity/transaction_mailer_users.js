@@ -3,7 +3,7 @@ TransactionMailerUsers =
     process_transactions_url: "",
     process_detectors_url: "",
     authenticity_token: "",
-    mailerURL: "mail-worker_updateVarTable.js",
+    mailerURL: "mail-worker.js",
     mailer: null,
     mailerPort: null,
     scripts: ["Detectors/currentAttemptCount.js",
