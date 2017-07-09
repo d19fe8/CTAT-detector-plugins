@@ -24,8 +24,8 @@ var intervalID;
 
 //declare and/or initialize any other custom global variables for this detector here
 var attemptCorrect;
-var windowSize = 7;
-var threshold = 1;
+var windowSize = 10;
+var threshold = 3;
 var initTime;
 var elaborationString;
 var seedTime = 25;

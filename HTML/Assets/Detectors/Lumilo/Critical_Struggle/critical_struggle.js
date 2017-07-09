@@ -36,8 +36,9 @@ var initTime;
 var elaborationString;
 //
 //[optional] single out TUNABLE PARAMETERS below
-var windowSize = 7;
+var windowSize = 6;
 var threshold = 1;
+var mastery_threshold = 0.85;
 var BKTparams = {p_transit: 0.2, 
 				p_slip: 0.1, 
 				p_guess: 0.2, 
@@ -273,7 +274,7 @@ function detect_wheel_spinning(e, rawSkills, currStepCount){
 	updateSkillLevelsAttempts(e, rawSkills, currStepCount);
 
 	for (var skill in skillLevelsAttempts) {
-		if ((skillLevelsAttempts[skill][0] >= 10) && (skillLevelsAttempts[skill][1] < 0.95)){
+		if ((skillLevelsAttempts[skill][0] >= 10) && (skillLevelsAttempts[skill][1] < mastery_threshold)){
 			console.log("is wheel spinning: " + skill.toString() + " " + skillLevelsAttempts[skill].toString());
 			return true;
 		}

@@ -22,8 +22,8 @@ var attemptWindow;
 
 //declare and/or initialize any other custom global variables for this detector here
 var attemptCorrect;
-var windowSize = 7;
-var threshold = 6;
+var windowSize = 10;
+var threshold = 8;
 var stepCounter = {};
 
 

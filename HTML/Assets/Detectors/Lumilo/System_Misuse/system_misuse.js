@@ -35,8 +35,8 @@ var help_variables = {"lastAction": "null",
 var elaborationString;
 //
 //[optional] single out TUNABLE PARAMETERS below
-var windowSize = 7; //arbitrary: need to tune
-var threshold = 1; //arbitrary: need to tune
+var windowSize = 10; //arbitrary: need to tune
+var threshold = 3; //arbitrary: need to tune
 var errorThreshold = 2; //currently somewhat arbitrary
 var newStepThreshold = 1; //currently somewhat arbitrary
 var familiarityThreshold = 0.4;

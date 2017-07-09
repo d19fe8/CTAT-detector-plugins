@@ -26,8 +26,6 @@ var mailer;
 
 
 //declare and/or initialize any other custom global variables for this detector here
-var timerId;
-var timerId2;
 var timerId3;
 var timerId4;
 var timerId5;
@@ -51,8 +49,6 @@ function receive_transaction( e ){
 		detector_output.step_id = e.data.tutor_data.step_id;
 
 		//custom processing (insert code here)
-		clearTimeout(timerId);
-	    clearTimeout(timerId2);
 	    clearTimeout(timerId3);
 	    clearTimeout(timerId4);
 	    clearTimeout(timerId5);
@@ -74,22 +70,6 @@ function receive_transaction( e ){
 		detector_output.transaction_id = e.data.transaction_id;
 
 		//custom processing (insert code here)
-		timerId = setTimeout(function() { 
-	      detector_output.history = e.data.tool_data.tool_event_time
-	      detector_output.value = "1, > 25 s"
-	      detector_output.time = new Date();
-		  mailer.postMessage(detector_output);
-		  postMessage(detector_output);
-		  console.log("output_data = ", detector_output); }, 
-	      25000)
-	    timerId2 = setTimeout(function() { 
-	      detector_output.history = e.data.tool_data.tool_event_time
-	      detector_output.value = "1, > 45 s"
-	      detector_output.time = new Date();
-		  mailer.postMessage(detector_output);
-		  postMessage(detector_output);
-		  console.log("output_data = ", detector_output);  }, 
-	      45000)
 	    timerId3 = setTimeout(function() { 
 	      detector_output.history = e.data.tool_data.tool_event_time
 	      detector_output.value = "1, > 1 min"
@@ -158,22 +138,6 @@ self.onmessage = function ( e ) {
 		console.log("output_data = ", detector_output);
 
 
-		timerId = setTimeout(function() { 
-	      detector_output.history = "onLoad"
-	      detector_output.value = "1, > 25 s"
-	      detector_output.time = new Date();
-		  mailer.postMessage(detector_output);
-		  postMessage(detector_output);
-		  console.log("output_data = ", detector_output); }, 
-	      25000)
-	    timerId2 = setTimeout(function() { 
-	      detector_output.history = "onLoad"
-	      detector_output.value = "1, > 45 s"
-	      detector_output.time = new Date();
-		  mailer.postMessage(detector_output);
-		  postMessage(detector_output);
-		  console.log("output_data = ", detector_output);  }, 
-	      45000)
 	    timerId3 = setTimeout(function() { 
 	      detector_output.history = "onLoad"
 	      detector_output.value = "1, > 1 min"
