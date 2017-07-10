@@ -193,15 +193,18 @@ function receive_transaction( e ){
 		var skill_1__name = "fakeSkill1";
 		var skill_1__attempt_count = "22";
 		var skill_1__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
+		var skill_1__probability = "0.22";
 		var skill_2__name = "fakeSkill2";
 		var skill_2__attempt_count = "47";
 		var skill_2__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
+		var skill_2__probability = "0.46";
 		var skill_3__name = "fakeSkill3";
 		var skill_3__attempt_count = "172";
 		var skill_3__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
+		var skill_3__probability = "0.67";
 
-		var dummyValue1 = skill_1__name + "," + skill_1__attempt_count + "," + skill_1__error_history + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history;
-		var dummyValue2 =  skill_3__name + "," + skill_3__attempt_count + "," + skill_3__error_history + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history;
+		var dummyValue1 = skill_1__name + "," + skill_1__attempt_count + "," + skill_1__error_history + "," + skill_1__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
+		var dummyValue2 =  skill_3__name + "," + skill_3__attempt_count + "," + skill_3__error_history + "," + skill_3__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
 		var dummyValues = [dummyValue1, dummyValue2];
 		detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
 
