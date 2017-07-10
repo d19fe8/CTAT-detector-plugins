@@ -6,9 +6,10 @@ TransactionMailerUsers =
     mailerURL: "mail-worker.js",
     mailer: null,
     mailerPort: null,
-    scripts: ["Detectors/currentAttemptCount.js",
-    "Detectors/Lumilo/idle.js",
-    "Detectors/help_models/help_model_try_if_low.js"],
+    scripts: ["Detectors/Adaptivity/currentAttemptCount.js",
+    "Detectors/Adaptivity/idle.js",
+    "Detectors/Adaptivity/help_model_try_if_low.js",
+    "Detectors/Adaptivity/tutor_ear.js"],
     active: []
 };
 
@@ -47,24 +48,75 @@ TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authTo
 	}
 	TransactionMailerUsers.active.push(detector);
 	console.log("TransactionMailerUsers.create(): s, active["+i+"]=", s, TransactionMailerUsers.active[i]);
-    
+
     detector.onmessage = function(e) 
         {
             var sel = e.data.name;
             var action = "UpdateVariable";
             var input = e.data.value;
+            var timerID;
 
-            var sai = new CTATSAI();
-            sai.setSelection(sel);
-            sai.setAction(action);
-            sai.setInput(input)
-            CTATCommShell.commShell.processComponentAction(sai=sai, tutorComponent=false, aTrigger="tutor")
+            if(sel!="tutor_ear"){
+                var sai = new CTATSAI();
+                sai.setSelection(sel);
+                sai.setAction(action);
+                sai.setInput(input);
+                CTATCommShell.commShell.processComponentAction(sai=sai, tutorComponent=false, aTrigger="tutor");
+            }
+            else if(input != ""){
+                //selection action input
+                var transactionID=CTATGuid.guid();
+                var updateType = e.data.history;
+
+                if(updateType=="hint_window_message"){
+                    var builder = new CTATTutorMessageBuilder();
+                    var msg = builder.createHintMessage([input], new CTATSAI(), 32, transactionID);
+                    msg = CTATMsgType.setProperty(msg, CTATTutorMessageBuilder.TRIGGER, "DATA");
+                    msg = CTATMsgType.setProperty(msg, CTATTutorMessageBuilder.SUBTYPE, CTATTutorMessageBuilder.TUTOR_PERFORMED);
+
+                    CTAT.ToolTutor.sendToInterface(msg);
+                }
+                else if(updateType=="alertOn"){
+                    timerID = setTimeout(function(){
+                        alert(input[0]);
+                        audio.pause();
+                    }, input[1]);
+                }
+                else if(updateType=="alertOff"){
+                    clearTimeout(timerID);
+                }
+                else if(updateType=="musicOn"){
+                    var audio = document.getElementById('audio');
+                    audio.src = input;
+                    if(audio.paused){
+                        audio.play();
+                    }
+                }
+                else if(updateType=="musicOff"){
+                    var audio = document.getElementById('audio');
+                    //if(!audio.paused){
+                    audio.pause();
+                    //}
+                }
+                else if(updateType=="interface_action"){
+                    var sai = new CTATSAI(input[0], input[1], input[2]);
+                    var builder = new CTATTutoringServiceMessageBuilder();
+                    var msg = builder.createInterfaceActionMessage(transactionID, sai);
+                    msg = CTATMsgType.setProperty(msg, CTATTutorMessageBuilder.TRIGGER, "DATA");
+                    msg = CTATMsgType.setProperty(msg, CTATTutorMessageBuilder.SUBTYPE, CTATTutorMessageBuilder.TUTOR_PERFORMED);
+
+                    CTAT.ToolTutor.sendToInterface(msg);
+                }
+
+            }
+
+                
         };
 
 
     }
     return TransactionMailerUsers;
-};
+}; 
 
 TransactionMailerUsers.sendTransaction = function(tx)
 {
