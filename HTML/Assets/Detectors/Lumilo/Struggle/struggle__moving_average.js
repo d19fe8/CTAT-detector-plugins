@@ -137,7 +137,7 @@ function receive_transaction( e ){
 			elaborationString = "lots of errors";
 		}
 		else{
-			elaborationString = "";
+			elaborationString = " ";
 		}
 
 

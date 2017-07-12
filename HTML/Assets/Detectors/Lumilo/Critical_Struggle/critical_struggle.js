@@ -501,7 +501,7 @@ function receive_transaction( e ){
 			}
 		}
 		else{
-			elaborationString = "";
+			elaborationString = " ";
 		}
 
 
