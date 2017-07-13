@@ -36,9 +36,22 @@ var currRight = "_______";
 var runningSolution = "";
 var solutionStages = "";
 var runningSolutionMinusCurrentLine = "";
+var stepCounter = {};
 //
 //
 //
+function reinsertParentheses(e){
+
+	var a = '20eq5parx-1par'.split("par");
+	var returnString = "";
+	var parenList = ['(',')'];	
+	for(var i = 0; i < a.length-1; i++){
+			returnString += a[i] + parenList[i%2];
+		}
+	returnString += a[a.length-1];
+
+	return returnString;
+}
 
 function receive_transaction( e ){
 	//e is the data of the transaction from mailer from transaction assembler
@@ -60,6 +73,19 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 		//
+		//
+
+		//
+		var currStep = e.data.tutor_data.selection;
+		if(currStep in stepCounter){
+			stepCounter[currStep] += 1;
+		}
+		else{
+			stepCounter[currStep] = 1;
+		}
+
+
+		//
 		if (e.data.tool_data.selection.includes("solve")){
 		
 			//TO-DO: generalize so that this works with the undo button
@@ -80,11 +106,21 @@ function receive_transaction( e ){
 				if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
 					currLeft = "[" + currLeft + "]";
 				}
+				else{
+					if(stepCounter[currStep] != 1){
+						currLeft = currLeft + "*";
+					}
+				}
 			}
 			if (e.data.tool_data.selection.includes("solveRight")){
 					currRight = e.data.tool_data.input;
 				if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
 					currRight = "[" + currRight + "]";
+				}
+				else{
+					if(stepCounter[currStep] != 1){
+						currRight = currRight + "*";
+					}
 				}
 			}
 
@@ -95,6 +131,9 @@ function receive_transaction( e ){
 						//would be ideal to change this to something more robust... specifically:
 						//would be nice if we could access varables from tutor state (variable table...)
 						prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ");
+						if("par" in prevEq){
+							prevEq = reinsertParentheses(prevEq);
+						} 
 						runningSolutionMinusCurrentLine = prevEq;
 						//"-x 6eq15"
 					}
