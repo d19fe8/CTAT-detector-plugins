@@ -6,7 +6,7 @@ var variableName = "critical_struggle"
 //initializations (do not touch)
 var detector_output = {name: variableName,
 						category: "Dashboard", 
-						value: "0, none",
+						value: "0, > 0 s",
 						history: "",
 						skill_names: "",
 						step_id: "",

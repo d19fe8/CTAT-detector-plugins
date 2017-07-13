@@ -108,7 +108,7 @@ function receive_transaction( e ){
 				}
 				else{
 					if(stepCounter[currStep] != 1){
-						currLeft = currLeft + "*";
+						currLeft = "[*] " + currLeft;
 					}
 				}
 			}
@@ -119,7 +119,7 @@ function receive_transaction( e ){
 				}
 				else{
 					if(stepCounter[currStep] != 1){
-						currRight = currRight + "*";
+						currRight = currRight + " [*]";
 					}
 				}
 			}
@@ -130,10 +130,7 @@ function receive_transaction( e ){
 						//this currently relies on the existing problem naming convention(!)
 						//would be ideal to change this to something more robust... specifically:
 						//would be nice if we could access varables from tutor state (variable table...)
-						prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ");
-						if("par" in prevEq){
-							prevEq = reinsertParentheses(prevEq);
-						} 
+						prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ").replace("par", "(");
 						runningSolutionMinusCurrentLine = prevEq;
 						//"-x 6eq15"
 					}
