@@ -110,10 +110,10 @@ function isDeliberate(e){
 
 //more controversial...
 function isFamiliar(e){
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=familiarityThreshold){
+	        if (parseFloat(rawSkills[property]["p_know"])<=familiarityThreshold){
 	        	return false;
 	        }
 	    }
@@ -122,10 +122,10 @@ function isFamiliar(e){
 }
 
 function isLowSkillStep_All(e){
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)>=familiarityThreshold){
+	        if (parseFloat(rawSkills[property]["p_know"])>=familiarityThreshold){
 	        	return false;
 	        }
 	    }
@@ -134,10 +134,10 @@ function isLowSkillStep_All(e){
 }
 
 function isLowSkillStep_Some(e){
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=familiarityThreshold){
+	        if (parseFloat(rawSkills[property]["p_know"])<=familiarityThreshold){
 	        	return true;
 	        }
 	    }
@@ -154,10 +154,10 @@ function lastActionUnclearFix(e){
 }
 function senseOfWhatToDo(e){
 	var sel = e.data.tutor_data.selection;
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=senseOfWhatToDoThreshold){
+	        if (parseFloat(rawSkills[property]["p_know"])<=senseOfWhatToDoThreshold){
 	        	return false;
 	        }
 	    }
@@ -413,13 +413,6 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 
-		if (help_variables.lastAction!="null"){
-			help_model_output = evaluateAction(e);
-		}
-		else{
-			help_model_output = "preferred"; //first action in whole tutor is set to "preferred" by default
-		}
-
 		//########  BKT  ##########
 		var currStep = e.data.tutor_data.selection;
 		for (var i in currSkills){
@@ -456,7 +449,6 @@ function receive_transaction( e ){
 
 		}
 
-
 		//keep track of num attempts on each step
 		if(currStep in stepCounter){
 			stepCounter[currStep] += 1;
@@ -466,6 +458,13 @@ function receive_transaction( e ){
 		}
 
 		//########################
+
+		if (help_variables.lastAction!="null"){
+			help_model_output = evaluateAction(e);
+		}
+		else{
+			help_model_output = "preferred"; //first action in whole tutor is set to "preferred" by default
+		}
 
 		var isWheelSpinning = detect_wheel_spinning(e, onboardSkills, stepCounter[currStep]);
 

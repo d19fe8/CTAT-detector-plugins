@@ -23,6 +23,15 @@ var onboardSkills;
 
 //declare and/or initialize any other custom global variables for this detector here...
 var stepCounter = {};
+var prevStep = "";
+var prevEq = "";
+var currRow = 1;
+var currLeftCorrect = 0;
+var currRightCorrect = 0;
+var currLeft = "_______";
+var currRight = "_______";
+var currError = "";
+var transitionError = "";
 //
 //[optional] single out TUNABLE PARAMETERS below
 var BKTparams = {p_transit: 0.2, 
@@ -38,40 +47,37 @@ var BKTparams = {p_transit: 0.2,
 //###############################
 //
 
-function updateSkillLevelsAttemptsErrors(e){
-	//
-	//
-	// to insert
-	//
-	//
-	//
-}
 
-function updateSkillLevelsAttemptsErrors(e, rawSkills, currStepCount){
-	for (var skill in rawSkills) {
-		if (rawSkills.hasOwnProperty(skill)){
-			if( skill in skillLevelsAttemptsErrors ){
-				if(currStepCount==1){
-					skillLevelsAttemptsErrors[skill][0] += 1;
-				}
-				skillLevelsAttemptsErrors[skill][1] = parseFloat(rawSkills[skill]["p_know"]);
-				skillLevelsAttemptsErrors[skill][2].shift();
-				skillLevelsAttemptsErrors[skill][2].push(format_error(e));
-			}
-			else{
-				skillLevelsAttemptsErrors[skill] = [1, parseFloat(rawSkills[skill]["p_know"]), [null, null, null, null, format_error(e)] ];
-			}
+function updateSkillLevelsAttemptsErrors(e, skill, currStepCount){
+
+	if(skill in skillLevelsAttemptsErrors ){
+		if(currStepCount==1){
+			skillLevelsAttemptsErrors[skill][0] += 1;
 		}
+
+		skillLevelsAttemptsErrors[skill][1] = parseFloat(onboardSkills[skill]["p_know"]);
+
+	}
+	else{
+		skillLevelsAttemptsErrors[skill] = [1, parseFloat(onboardSkills[skill]["p_know"]), [null, null, null, null, null, null]];
 	}
 }
 
 function format_areas_of_struggle_data(e){
-	//
-	//
-	// to insert
-	//
-	//
-	//
+	var return_string = "";
+	for (var skill in skillLevelsAttemptsErrors) {
+		if (skillLevelsAttemptsErrors.hasOwnProperty(skill)){
+
+			var currSkillName = skill;
+			var currSkillAttemptCount = String(skillLevelsAttemptsErrors[skill][0]);
+			var currSkillLevel = String(skillLevelsAttemptsErrors[skill][1]);
+			var currSkillErrorHistory = skillLevelsAttemptsErrors[skill][2].join("@");
+
+			if (return_string!=""){return_string += ";"};
+			return_string += currSkillName + "," + currSkillAttemptCount + "," + currSkillErrorHistory + "," + currSkillLevel;
+		}
+	}
+	return return_string;
 }
 
 //
@@ -137,16 +143,74 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 
-		//########  BKT  ##########
 		var currStep = e.data.tutor_data.selection;
+
+
+		//error updates
+		if (e.data.tool_data.selection.includes("solve")){
+
+			//TO-DO: generalize so that this works with the undo button
+			if (e.data.tool_data.selection == "solveLeft" + currRow && e.data.tutor_data.action_evaluation.toLowerCase() == "correct"){
+				currLeftCorrect = 1;
+			}
+			if (e.data.tool_data.selection == "solveRight" + currRow && e.data.tutor_data.action_evaluation.toLowerCase() == "correct"){
+				currRightCorrect = 1;
+			}
+		
+			if (e.data.tutor_data.selection.includes("solveLeft")){
+					currLeft = e.data.tool_data.input;
+			}
+			if (e.data.tutor_data.selection.includes("solveRight")){
+					currRight = e.data.tool_data.input;
+			}
+
+			if (e.data.tutor_data.selection.includes(String(currRow)) && e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
+
+				if (prevEq == ""){
+					//this currently relies on the existing problem naming convention(!)
+					//would be ideal to change this to something more robust... specifically:
+					//would be nice if we could access varables from tutor state (variable table...)
+					prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ");
+					//"-x 6eq15"
+				}
+
+				//needs to be expanded...
+				currError = currLeft + " = " + currRight;
+				
+				transitionError = prevEq + " \\n " + currError;
+
+				console.log("TRANSITION_ERROR: " + transitionError);
+			}
+
+			if (currLeftCorrect==1 && currRightCorrect==1){
+					currRow += 1;
+					currLeftCorrect = 0;
+					currRightCorrect = 0;
+					prevEq = currLeft + " = " + currRight;
+					currLeft = "_______";
+					currRight = "_______";
+			}
+		}
+
+
 		for (var i in currSkills){
 			var skill = currSkills[i];
 
-			if(!(currStep in stepCounter)){
-				if (!(skill in onboardSkills)){	//if this skill has not been encountered before
-					onboardSkills[skill] = clone(BKTparams);
-				}
+			//keep track of num attempts on each step
+			if(currStep in stepCounter){
+				stepCounter[currStep] += 1;
+			}
+			else{
+				stepCounter[currStep] = 1;
+			}
 
+			//
+			//BKT
+			//
+			if (!(skill in onboardSkills)){	//if this skill has not been encountered before
+					onboardSkills[skill] = clone(BKTparams);
+			}
+			if(stepCounter[currStep]==1){
 				var p_know_tminus1 = onboardSkills[skill]["p_know"];
 				var p_slip = onboardSkills[skill]["p_slip"];
 				var p_guess = onboardSkills[skill]["p_guess"];
@@ -170,43 +234,47 @@ function receive_transaction( e ){
 				console.log("engine BKT: ", e.data.tutor_data.skills[0].pKnown);
 				console.log(onboardSkills[skill]["p_know"]);
 			}
+		}
+
+
+		for (var i in currSkills){
+			var skill = currSkills[i];
+
+			console.log(skill);
+			updateSkillLevelsAttemptsErrors(e, skill, stepCounter[currStep]);
+
+			skillLevelsAttemptsErrors[skill][2].shift();
+			skillLevelsAttemptsErrors[skill][2].push(transitionError);
 
 		}
 
 
-		//keep track of num attempts on each step
-		if(currStep in stepCounter){
-			stepCounter[currStep] += 1;
-		}
-		else{
-			stepCounter[currStep] = 1;
-		}
 
 		//########################
 
-		//updateSkillLevelsAttemptsErrors(e, rawSkills, currStepCount);
-
-
-		//detector_output.value = format_areas_of_struggle_data(e);
+		detector_output.value = format_areas_of_struggle_data(e);
 
 		//PLACEHOLDER
-		var skill_1__name = "fakeSkill1";
-		var skill_1__attempt_count = "22";
-		var skill_1__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
-		var skill_1__probability = "0.22";
-		var skill_2__name = "fakeSkill2";
-		var skill_2__attempt_count = "47";
-		var skill_2__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
-		var skill_2__probability = "0.46";
-		var skill_3__name = "fakeSkill3";
-		var skill_3__attempt_count = "172";
-		var skill_3__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
-		var skill_3__probability = "0.67";
+		// var skill_1__name = "fakeSkill1";
+		// var skill_1__attempt_count = "22";
+		// var skill_1__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
 
-		var dummyValue1 = skill_1__name + "," + skill_1__attempt_count + "," + skill_1__error_history + "," + skill_1__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
-		var dummyValue2 =  skill_3__name + "," + skill_3__attempt_count + "," + skill_3__error_history + "," + skill_3__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
-		var dummyValues = [dummyValue1, dummyValue2];
-		detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
+		// var skill_1__probability = "0.22";
+		// var skill_2__name = "fakeSkill2";
+		// var skill_2__attempt_count = "47";
+		// var skill_2__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
+		// var skill_2__probability = "0.46";
+		// var skill_3__name = "fakeSkill3";
+		// var skill_3__attempt_count = "172";
+		// var skill_3__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
+		// var skill_3__probability = "0.67";
+
+		// var dummyValue1 = skill_1__name + "," + skill_1__attempt_count + "," + skill_1__error_history + "," + skill_1__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
+		//var dummyValue2 =  skill_3__name + "," + skill_3__attempt_count + "," + skill_3__error_history + "," + skill_3__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
+		//var dummyValues = [dummyValue1, dummyValue2];
+		//detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
+
+
 
 		detector_output.history = JSON.stringify([skillLevelsAttemptsErrors, onboardSkills]);
 

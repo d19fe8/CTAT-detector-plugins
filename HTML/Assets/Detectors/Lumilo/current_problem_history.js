@@ -26,8 +26,16 @@ var mailer;
 
 
 //declare and/or initialize any other custom global variables for this detector here
-//
-//
+var prevStep = "";
+var prevEq = "";
+var currRow = 1;
+var currLeftCorrect = 0;
+var currRightCorrect = 0;
+var currLeft = "_______";
+var currRight = "_______";
+var runningSolution = "";
+var solutionStages = "";
+var runningSolutionMinusCurrentLine = "";
 //
 //
 //
@@ -52,23 +60,83 @@ function receive_transaction( e ){
 
 		//custom processing (insert code here)
 		//
-		//
-		//
-		//
-		//
-		var dummyStep1 = "3x + 3 = _____";
-		var dummyStep2 = "3x + 3 = 24";
-		var dummyStep3 = "3x + 3 = 24 \\n 3x = _____";
-		var dummyStep4 = "3x + 3 = 24 \\n 3x = 24 -3";
-		var dummyStep5 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = _____";
-		var dummyStep6 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21";
-		var dummyStep7 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21 \\n 3x [- 3] = _____";
+		if (e.data.tool_data.selection.includes("solve")){
+		
+			//TO-DO: generalize so that this works with the undo button
+			if (e.data.tool_data.selection == "solveLeft" + currRow && e.data.tutor_data.action_evaluation.toLowerCase() == "correct"){
+				currLeftCorrect = 1;
+			}
+			if (e.data.tool_data.selection == "solveRight" + currRow && e.data.tutor_data.action_evaluation.toLowerCase() == "correct"){
+				currRightCorrect = 1;
+			}
 
-		var dummyValue1 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3;
-		var dummyValue2 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3 + "," + dummyStep4 + "," +dummyStep5 + "," + dummyStep6 + "," + dummyStep7;
+			//
+			//
+			//perform on any attempt
+			//
+			//
+			if (e.data.tool_data.selection.includes("solveLeft")){
+				currLeft = e.data.tool_data.input;
+				if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
+					currLeft = "[" + currLeft + "]";
+				}
+			}
+			if (e.data.tool_data.selection.includes("solveRight")){
+					currRight = e.data.tool_data.input;
+				if (e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
+					currRight = "[" + currRight + "]";
+				}
+			}
 
-		var dummyValues = [dummyValue1, dummyValue2];
-		detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
+			if (e.data.tool_data.selection.includes(String(currRow))){
+
+					if (prevEq == ""){
+						//this currently relies on the existing problem naming convention(!)
+						//would be ideal to change this to something more robust... specifically:
+						//would be nice if we could access varables from tutor state (variable table...)
+						prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ");
+						runningSolutionMinusCurrentLine = prevEq;
+						//"-x 6eq15"
+					}
+
+					//needs to be expanded...
+					currAttempt = currLeft + " = " + currRight;
+
+					//runningSolution and solutionStages
+					runningSolution = runningSolutionMinusCurrentLine + " \\n " + currAttempt;
+					if (solutionStages != ""){
+						solutionStages += ",";
+					}
+					solutionStages += runningSolution;
+
+					if (currLeftCorrect==1 && currRightCorrect==1){
+						currRow += 1;
+						runningSolutionMinusCurrentLine = runningSolutionMinusCurrentLine + " \\n " + currAttempt;
+						currLeftCorrect = 0;
+						currRightCorrect = 0;
+						prevEq = currLeft + " = " + currRight;
+						currLeft = "_______";
+						currRight = "_______";
+					}
+			}
+
+			detector_output.value = solutionStages;
+		}
+
+		//dummy example
+		// var dummyStep1 = "3x + 3 = _____";
+		// var dummyStep2 = "3x + 3 = 24";
+		// var dummyStep3 = "3x + 3 = 24 \\n 3x = _____";
+		// var dummyStep4 = "3x + 3 = 24 \\n 3x = 24 -3";
+		// var dummyStep5 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = _____";
+		// var dummyStep6 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21";
+		// var dummyStep7 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21 \\n 3x [- 3] = _____";
+
+		// var dummyValue1 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3;
+		// var dummyValue2 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3 + "," + dummyStep4 + "," +dummyStep5 + "," + dummyStep6 + "," + dummyStep7;
+
+		// var dummyValues = [dummyValue1, dummyValue2];
+		// detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
 
 
 	}
