@@ -7,7 +7,7 @@ var variableName = "current_problem_history"
 var detector_output = {name: variableName,
 						category: "Dashboard", 
 						value: "0, none",
-						history: "",
+						history: "0, none",
 						skill_names: "",
 						step_id: "",
 						transaction_id: "",
@@ -40,9 +40,15 @@ var stepCounter = {};
 //
 //
 //
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 function reinsertParentheses(e){
 
-	var a = '20eq5parx-1par'.split("par");
+	var a = e.split("par");
 	var returnString = "";
 	var parenList = ['(',')'];	
 	for(var i = 0; i < a.length-1; i++){
@@ -130,9 +136,8 @@ function receive_transaction( e ){
 						//this currently relies on the existing problem naming convention(!)
 						//would be ideal to change this to something more robust... specifically:
 						//would be nice if we could access varables from tutor state (variable table...)
-						prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ").replace("par", "(");
+						prevEq = reinsertParentheses(e.data.context.problem_name.replaceAll(" ", " \+ ").replaceAll("eq", " \= ").replaceAll("\\+", " \+ "));
 						runningSolutionMinusCurrentLine = prevEq;
-						//"-x 6eq15"
 					}
 
 					//needs to be expanded...
@@ -156,24 +161,8 @@ function receive_transaction( e ){
 					}
 			}
 
-			detector_output.value = solutionStages;
+			detector_output.history = solutionStages;
 		}
-
-		//dummy example
-		// var dummyStep1 = "3x + 3 = _____";
-		// var dummyStep2 = "3x + 3 = 24";
-		// var dummyStep3 = "3x + 3 = 24 \\n 3x = _____";
-		// var dummyStep4 = "3x + 3 = 24 \\n 3x = 24 -3";
-		// var dummyStep5 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = _____";
-		// var dummyStep6 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21";
-		// var dummyStep7 = "3x + 3 = 24 \\n 3x = 24 -3 \\n 3x = 21 \\n 3x [- 3] = _____";
-
-		// var dummyValue1 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3;
-		// var dummyValue2 = dummyStep1 + "," + dummyStep2 + "," + dummyStep3 + "," + dummyStep4 + "," +dummyStep5 + "," + dummyStep6 + "," + dummyStep7;
-
-		// var dummyValues = [dummyValue1, dummyValue2];
-		// detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
-
 
 	}
 
@@ -224,8 +213,8 @@ self.onmessage = function ( e ) {
 		//
 
 		if (detectorForget){
-			detector_output.history = "";
-			detector_output.value = 0;
+			detector_output.history = "0, none";
+			detector_output.value = "0, none";
 		}
 
 

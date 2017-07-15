@@ -47,6 +47,23 @@ var BKTparams = {p_transit: 0.2,
 //###############################
 //
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+function reinsertParentheses(e){
+
+	var a = e.split("par");
+	var returnString = "";
+	var parenList = ['(',')'];	
+	for(var i = 0; i < a.length-1; i++){
+			returnString += a[i] + parenList[i%2];
+		}
+	returnString += a[a.length-1];
+
+	return returnString;
+}
 
 function updateSkillLevelsAttemptsErrors(e, skill, currStepCount){
 
@@ -59,24 +76,23 @@ function updateSkillLevelsAttemptsErrors(e, skill, currStepCount){
 
 	}
 	else{
-		skillLevelsAttemptsErrors[skill] = [1, parseFloat(onboardSkills[skill]["p_know"]), [null, null, null, null, null, null]];
+		skillLevelsAttemptsErrors[skill] = [1, parseFloat(onboardSkills[skill]["p_know"]), [null, null, null, null, null]];
 	}
 }
 
-function format_areas_of_struggle_data(e){
+function format_areas_of_struggle_data(e, skill, cleaned_skill_name){
 	var return_string = "";
-	for (var skill in skillLevelsAttemptsErrors) {
-		if (skillLevelsAttemptsErrors.hasOwnProperty(skill)){
 
-			var currSkillName = skill;
-			var currSkillAttemptCount = String(skillLevelsAttemptsErrors[skill][0]);
-			var currSkillLevel = String(skillLevelsAttemptsErrors[skill][1]);
-			var currSkillErrorHistory = skillLevelsAttemptsErrors[skill][2].join("@");
+	if (skillLevelsAttemptsErrors.hasOwnProperty(skill)){
 
-			if (return_string!=""){return_string += ";"};
-			return_string += currSkillName + "," + currSkillAttemptCount + "," + currSkillErrorHistory + "," + currSkillLevel;
-		}
+		var currSkillName = cleaned_skill_name;
+		var currSkillAttemptCount = String(skillLevelsAttemptsErrors[skill][0]);
+		var currSkillLevel = String(skillLevelsAttemptsErrors[skill][1]);
+		var currSkillErrorHistory = skillLevelsAttemptsErrors[skill][2].join("@");
+
+		return_string += currSkillName + "," + currSkillAttemptCount + "," + currSkillErrorHistory + "," + currSkillLevel;
 	}
+
 	return return_string;
 }
 
@@ -170,8 +186,7 @@ function receive_transaction( e ){
 					//this currently relies on the existing problem naming convention(!)
 					//would be ideal to change this to something more robust... specifically:
 					//would be nice if we could access varables from tutor state (variable table...)
-					prevEq = e.data.context.problem_name.replace(" ", " + ").replace("eq", " = ").replace("+", " + ").replace("=", " = ");
-					//"-x 6eq15"
+					prevEq = reinsertParentheses(e.data.context.problem_name.replaceAll(" ", " \+ ").replaceAll("eq", " \= ").replaceAll("\\+", " \+ "));
 				}
 
 				//needs to be expanded...
@@ -236,9 +251,12 @@ function receive_transaction( e ){
 			}
 		}
 
-
+		//update skill information for all skills, send each skill update
 		for (var i in currSkills){
 			var skill = currSkills[i];
+			var cleaned_skill_name = skill.split("/");    
+			cleaned_skill_name.pop();
+			cleaned_skill_name = cleaned_skill_name.join("/").replaceAll("\\_", " "); 
 
 			console.log(skill);
 			updateSkillLevelsAttemptsErrors(e, skill, stepCounter[currStep]);
@@ -246,55 +264,32 @@ function receive_transaction( e ){
 			skillLevelsAttemptsErrors[skill][2].shift();
 			skillLevelsAttemptsErrors[skill][2].push(transitionError);
 
+			detector_output.name = "SKILL_UPDATE_" + cleaned_skill_name;
+			detector_output.value = format_areas_of_struggle_data(e, skill, cleaned_skill_name);
+			detector_output.history = "";
+			detector_output.time = new Date();
+			detector_output.transaction_id = e.data.transaction_id;
+			mailer.postMessage(detector_output);
+			postMessage(detector_output);
+			console.log("output_data = ", detector_output);
+
 		}
 
-
-
-		//########################
-
-		detector_output.value = format_areas_of_struggle_data(e);
-
-		//PLACEHOLDER
-		// var skill_1__name = "fakeSkill1";
-		// var skill_1__attempt_count = "22";
-		// var skill_1__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
-
-		// var skill_1__probability = "0.22";
-		// var skill_2__name = "fakeSkill2";
-		// var skill_2__attempt_count = "47";
-		// var skill_2__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
-		// var skill_2__probability = "0.46";
-		// var skill_3__name = "fakeSkill3";
-		// var skill_3__attempt_count = "172";
-		// var skill_3__error_history = " 2x + 3x = 10 \\n _____ = [x] @ 2x + 3x = 10 \\n _____ = [10x] @ 2x + 3x = 10 \\n [2x] = 10 @ 2x + 3x = 10 \\n [x] = 10 @ 2x + 3x = 10 \\n [5 + x] = 10";
-		// var skill_3__probability = "0.67";
-
-		// var dummyValue1 = skill_1__name + "," + skill_1__attempt_count + "," + skill_1__error_history + "," + skill_1__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
-		//var dummyValue2 =  skill_3__name + "," + skill_3__attempt_count + "," + skill_3__error_history + "," + skill_3__probability + ";" + skill_2__name + "," + skill_2__attempt_count + "," + skill_2__error_history + "," + skill_2__probability;
-		//var dummyValues = [dummyValue1, dummyValue2];
-		//detector_output.value = String(dummyValues[Math.floor(Math.random() * dummyValues.length)]);
-
-
-
+		//also update this variable, for initialization of detector
+		detector_output.name = variableName;
+		detector_output.value = "0, none";
 		detector_output.history = JSON.stringify([skillLevelsAttemptsErrors, onboardSkills]);
-
-	}
-
-	//set conditions under which detector should update
-	//external state and history
-	if(e.data.actor == 'student' && e.data.tool_data.selection !="done" && e.data.tool_data.action != "UpdateVariable"){
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
-
-		//custom processing (insert code here)
-
-
-
 		mailer.postMessage(detector_output);
 		postMessage(detector_output);
 		console.log("output_data = ", detector_output);
+
+
 	}
+
 }
+
 
 
 self.onmessage = function ( e ) {
