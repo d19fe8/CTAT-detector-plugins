@@ -38,7 +38,7 @@ var elaborationString;
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 6;
 var threshold = 1;
-var mastery_threshold = 0.85;
+var mastery_threshold = 0.8;
 var BKTparams = {p_transit: 0.2, 
 				p_slip: 0.1, 
 				p_guess: 0.2, 
@@ -337,7 +337,17 @@ function checkTimeElapsed(initTime) {
   	var timeDiff = secondsSince(initTime);
   	var currTimeMessage = detector_output.value.split(',')[1];
   	console.log(currTimeMessage);
-	if( timeDiff > (300-seedTime)){ 
+	if( timeDiff > (600-seedTime)){ 
+		if (currTimeMessage!=" > 10 min"){ 
+	      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
+	      detector_output.value = "1, > 10 min, " + elaborationString;
+	      detector_output.time = new Date();
+		  mailer.postMessage(detector_output);
+		  postMessage(detector_output);
+		  console.log("output_data = ", detector_output);  
+		}
+	}
+	else if( timeDiff > (300-seedTime)){ 
 		if (currTimeMessage!=" > 5 min"){ 
 	      detector_output.history = JSON.stringify([attemptWindow, skillLevelsAttempts, initTime, onboardSkills]);
 	      detector_output.value = "1, > 5 min, " + elaborationString;
