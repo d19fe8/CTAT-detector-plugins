@@ -22,6 +22,7 @@ var attemptWindow;
 var initTime;
 var lastTrigger;
 var intervalID;
+var onboardSkills;
 
 //declare and/or initialize any other custom global variables for this detector here...
 var stepCounter = {};
@@ -37,12 +38,57 @@ var elaborationString;
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 10; //arbitrary: need to tune
 var threshold = 3; //arbitrary: need to tune
+var BKTparams = {p_transit: 0.2, 
+				p_slip: 0.1, 
+				p_guess: 0.2, 
+				p_know: 0.25};
 var errorThreshold = 2; //currently somewhat arbitrary
 var newStepThreshold = 1; //currently somewhat arbitrary
 var familiarityThreshold = 0.4;
 var senseOfWhatToDoThreshold = 0.6;
 var hintIsHelpfulPlaceholder = true; //currently a dummy value (assumption that hint is always helpful...)
 var seedTime = 25;
+
+//
+//###############################
+//###############################
+//###############################
+//###############################
+//
+
+function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
 
 function secondsSince(initTime){	
 	var currTime = new Date();
@@ -57,7 +103,7 @@ function checkTimeElapsed(initTime) {
   	console.log(currTimeMessage);
 	if( timeDiff > (300-seedTime)){ 
 		if (currTimeMessage!=" > 5 min"){ 
-	      detector_output.history = JSON.stringify([attemptWindow, initTime]);
+	      detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 	      detector_output.value = "1, > 5 min, " + elaborationString;
 	      detector_output.time = new Date();
 		  mailer.postMessage(detector_output);
@@ -67,7 +113,7 @@ function checkTimeElapsed(initTime) {
 	}
 	else if( timeDiff > (120-seedTime)){ 
 		if (currTimeMessage!=" > 2 min"){ 
-		  detector_output.history = JSON.stringify([attemptWindow, initTime]);
+		  detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 	      detector_output.value = "1, > 2 min, " + elaborationString;
 	      detector_output.time = new Date();
 		  mailer.postMessage(detector_output);
@@ -77,7 +123,7 @@ function checkTimeElapsed(initTime) {
 	}
 	else if( timeDiff > (60-seedTime)){
 	  if (currTimeMessage!=" > 1 min"){ 
-		  detector_output.history = JSON.stringify([attemptWindow, initTime]);
+		  detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 	      detector_output.value = "1, > 1 min, " + elaborationString;
 	      detector_output.time = new Date();
 		  mailer.postMessage(detector_output);
@@ -87,7 +133,7 @@ function checkTimeElapsed(initTime) {
 	}
 	else if( timeDiff > (45-seedTime)){ 
 		if (currTimeMessage!=" > 45 s"){ 
-		  detector_output.history = JSON.stringify([attemptWindow, initTime]);
+		  detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 	      detector_output.value = "1, > 45 s, " + elaborationString;
 	      detector_output.time = new Date();
 		  mailer.postMessage(detector_output);
@@ -98,7 +144,7 @@ function checkTimeElapsed(initTime) {
 	else{
 		console.log(currTimeMessage == " > " + seedTime.toString() + " s");
 		if(currTimeMessage!=" > " + seedTime.toString() + " s"){
-		  detector_output.history = JSON.stringify([attemptWindow, initTime]);
+		  detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 	      detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
 	      detector_output.time = new Date();
 		  mailer.postMessage(detector_output);
@@ -197,10 +243,10 @@ function isDeliberate(e){
 
 //more controversial...
 function isFamiliar(e){
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=familiarityThreshold){
+	        if (parseFloat(rawSkills[property]['p_know'])<=familiarityThreshold){
 	        	return false;
 	        }
 	    }
@@ -209,10 +255,10 @@ function isFamiliar(e){
 }
 
 function isLowSkillStep_All(e){
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)>=familiarityThreshold){
+	        if (parseFloat(rawSkills[property]['p_know'])>=familiarityThreshold){
 	        	return false;
 	        }
 	    }
@@ -221,10 +267,10 @@ function isLowSkillStep_All(e){
 }
 
 function isLowSkillStep_Some(e){
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=familiarityThreshold){
+	        if (parseFloat(rawSkills[property]['p_know'])<=familiarityThreshold){
 	        	return true;
 	        }
 	    }
@@ -241,10 +287,10 @@ function lastActionUnclearFix(e){
 }
 function senseOfWhatToDo(e){
 	var sel = e.data.tutor_data.selection;
-	var rawSkills = e.data.tutor_data.skills;
+	var rawSkills = onboardSkills;
 	for (var property in rawSkills) {
 	    if (rawSkills.hasOwnProperty(property)) {
-	        if (parseFloat(rawSkills[property].pKnown)<=senseOfWhatToDoThreshold){
+	        if (parseFloat(rawSkills[property]['p_know'])<=senseOfWhatToDoThreshold){
 	        	return false;
 	        }
 	    }
@@ -286,7 +332,7 @@ function evaluateAction(e){
 			}
 		}
 		else{
-		console.log("not deliberate")
+			console.log("not deliberate")
 			return "hint abuse";
 		}
 
@@ -359,8 +405,8 @@ function receive_transaction( e ){
 	//necessarily updating external state and history)
 	if(e.data.actor == 'student' && e.data.tool_data.selection !="done" && e.data.tool_data.action != "UpdateVariable"){
 		//do not touch
-		rawSkills = e.data.tutor_data.skills
-		var currSkills = []
+		rawSkills = e.data.tutor_data.skills;
+		var currSkills = [];
 		for (var property in rawSkills) {
 		    if (rawSkills.hasOwnProperty(property)) {
 		        currSkills.push(rawSkills[property].name + "/" + rawSkills[property].category)
@@ -370,6 +416,52 @@ function receive_transaction( e ){
 		detector_output.step_id = e.data.tutor_data.step_id;
 
 		//custom processing (insert code here)
+
+		//########  BKT  ##########
+		var currStep = e.data.tutor_data.selection;
+		for (var i in currSkills){
+			var skill = currSkills[i];
+
+			if(!(currStep in stepCounter)){
+				if (!(skill in onboardSkills)){	//if this skill has not been encountered before
+					onboardSkills[skill] = clone(BKTparams);
+				}
+
+				var p_know_tminus1 = onboardSkills[skill]["p_know"];
+				var p_slip = onboardSkills[skill]["p_slip"];
+				var p_guess = onboardSkills[skill]["p_guess"];
+				var p_transit = onboardSkills[skill]["p_transit"];
+
+				console.log(onboardSkills[skill]["p_know"]);
+
+
+				if (e.data.tutor_data.action_evaluation.toLowerCase()=="correct"){
+					var p_know_given_obs = (p_know_tminus1*(1-p_slip))/( (p_know_tminus1*(1-p_slip)) + ((1-p_know_tminus1)*p_guess) );
+				}
+				else{
+					var p_know_given_obs = (p_know_tminus1*p_slip)/( (p_know_tminus1*p_slip) + ((1-p_know_tminus1)*(1-p_guess)) );
+				}
+				
+				onboardSkills[skill]["p_know"] = p_know_given_obs + (1 - p_know_given_obs)*p_transit;
+
+				//following TutorShop, round down to two decimal places
+				onboardSkills[skill]["p_know"] = Math.floor(onboardSkills[skill]["p_know"] * 100) / 100;
+
+				console.log("engine BKT: ", e.data.tutor_data.skills[0].pKnown);
+				console.log(onboardSkills[skill]["p_know"]);
+			}
+
+		}
+
+		//keep track of num attempts on each step
+		if(currStep in stepCounter){
+			stepCounter[currStep] += 1;
+		}
+		else{
+			stepCounter[currStep] = 1;
+		}
+
+		//###########
 
 		if (help_variables.lastAction!="null"){
 			help_model_output = evaluateAction(e);
@@ -429,7 +521,7 @@ function receive_transaction( e ){
 
 		if (detector_output.value.split(',')[0]=="0" && (sumAskTeacherForHelp >= threshold)){
 			initTime = new Date();
-			detector_output.history = JSON.stringify([attemptWindow, initTime]);
+			detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 			detector_output.value = "1, > " + seedTime.toString() + " s, " + elaborationString;
 			detector_output.time = new Date();
 
@@ -437,12 +529,12 @@ function receive_transaction( e ){
 
 		}
 		else if (detector_output.value.split(',')[0]!="0" && (sumAskTeacherForHelp >= threshold)){
-			detector_output.history = JSON.stringify([attemptWindow, initTime]);
+			detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 			detector_output.time = new Date();
 		}
 		else{
 			detector_output.value = "0, > 0 s, " + elaborationString;
-			detector_output.history = JSON.stringify([attemptWindow, initTime]);
+			detector_output.history = JSON.stringify([attemptWindow, initTime, lastTrigger, onboardSkills]);
 			detector_output.time = new Date();
 
 			clearInterval(intervalID);
@@ -497,6 +589,7 @@ self.onmessage = function ( e ) {
 			//initialize variables to your desired 'default' values
 			//
 			attemptWindow = Array.apply(null, Array(windowSize)).map(Number.prototype.valueOf,0);
+			onboardSkills = {};
 		}
 		else{
 			//if the detector history is not empty, you can access it via:
@@ -508,6 +601,7 @@ self.onmessage = function ( e ) {
 			attemptWindow = all_history[0];
 			initTime = new Date(all_history[1]);
 			lastTrigger = all_history[2];
+			onboardSkills = all_history[3];
 
 			if(detector_output.value.split(',')[0]!="0"){
 				intervalID = setInterval( function() { checkTimeElapsed(initTime);} , 3000);
