@@ -39,6 +39,10 @@ var elaborationString;
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 10;
 var threshold = 3;
+var BKTparams = {p_transit: 0.2, 
+				p_slip: 0.1, 
+				p_guess: 0.2, 
+				p_know: 0.25};
 var errorThreshold = 2; //currently arbitrary
 var newStepThreshold = 1; //currently arbitrary
 var familiarityThreshold = 0.4;
@@ -439,18 +443,26 @@ function receive_transaction( e ){
 			help_model_output = "preferred"; //first action in whole tutor is set to "preferred" by default
 		}
 
-		attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
-		attemptWindow.shift();
-		attemptWindow.push(attemptCorrect);
+		if(e.data.tutor_data.action_evaluation.toLowerCase() != "hint"){
+			attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
+			attemptWindow.shift();
+			attemptWindow.push(attemptCorrect);
+		}
+		else{
+			console.log("is hint request: no direct/immediate effect on struggle detector");
+		}
 
 		if (help_model_output == "ask teacher for help/try step"){
 			for(var i=0; i<(windowSize-threshold); i++){
-				a.shift(); 
-				a.push(0)};
+				attemptWindow.shift(); 
+				attemptWindow.push(0)};
 		}
 
 		var sumCorrect = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
 		console.log(attemptWindow);
+
+		updateHistory(e);
+		console.log(help_model_output);
 		
 	}
 

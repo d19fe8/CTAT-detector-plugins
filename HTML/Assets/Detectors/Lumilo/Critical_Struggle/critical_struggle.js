@@ -22,6 +22,7 @@ var attemptWindow;
 var skillLevelsAttempts;
 var intervalID;
 var onboardSkills;
+var stepCounter = {};
 
 //declare and/or initialize any other custom global variables for this detector here...
 var initTime;
@@ -263,11 +264,8 @@ function receive_transaction( e ){
 		var sumAskTeacherForHelp = attemptWindow.reduce(function(pv, cv) { return pv + cv; }, 0);
 
 		console.log(attemptWindow);
-		console.log(help_model_output);
 		console.log(isWheelSpinning);
 		console.log(skillLevelsAttempts);
-
-		updateHistory(e);
 
 	}
 
