@@ -443,13 +443,18 @@ function receive_transaction( e ){
 			help_model_output = "preferred"; //first action in whole tutor is set to "preferred" by default
 		}
 
-		if(e.data.tutor_data.action_evaluation.toLowerCase() != "hint"){
+		// attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
+		// attemptWindow.shift();
+		// attemptWindow.push(attemptCorrect);
+
+		// ignore further hint requests if student has already seen all hint levels for this step (i.e., these do not contribute to struggle detector)
+		if(seenAllHintLevels(e) && e.data.tutor_data.action_evaluation.toLowerCase() == "hint"){
+			console.log("is hint request on step for which student has already seen all hints: no direct/immediate effect on struggle detector");
+		}
+		else{
 			attemptCorrect = (e.data.tutor_data.action_evaluation.toLowerCase() == "correct") ? 1 : 0;
 			attemptWindow.shift();
 			attemptWindow.push(attemptCorrect);
-		}
-		else{
-			console.log("is hint request: no direct/immediate effect on struggle detector");
 		}
 
 		if (help_model_output == "ask teacher for help/try step"){
@@ -478,6 +483,9 @@ function receive_transaction( e ){
 		if (sumCorrect<=threshold){
 			if(help_model_output == "ask teacher for help/try step"){
 				elaborationString = "hints aren't helping";
+			}
+			else if(help_model_output == "not acceptable/hint avoidance"){
+				elaborationString = "not using hints";
 			}
 			else{
 				elaborationString = "lots of errors";
