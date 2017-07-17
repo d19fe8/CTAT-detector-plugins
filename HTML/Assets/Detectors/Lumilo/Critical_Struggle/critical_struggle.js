@@ -41,25 +41,21 @@ var seedTime = 25;
 
 
 
-function updateSkillLevelsAttempts(e, rawSkills, currStepCount){
-	for (var skill in rawSkills) {
-		if (rawSkills.hasOwnProperty(skill)){
-			if( skill in skillLevelsAttempts ){
-				if(currStepCount==1){
-					skillLevelsAttempts[skill][0] += 1;
-				}
-				skillLevelsAttempts[skill][1] = parseFloat(rawSkills[skill]["p_know"]);
-			}
-			else{
-				skillLevelsAttempts[skill] = [1, parseFloat(rawSkills[skill]["p_know"])];
-			}
+function updateSkillLevelsAttempts(e, rawSkills, skill, currStepCount){
+	if( skill in skillLevelsAttempts ){
+		if(currStepCount==1){
+			skillLevelsAttempts[skill][0] += 1;
+		}
+		skillLevelsAttempts[skill][1] = parseFloat(rawSkills[skill]["p_know"]);
+	}
+	else{
+		if (skill in rawSkills){
+			skillLevelsAttempts[skill] = [1, parseFloat(rawSkills[skill]["p_know"])];
 		}
 	}
 }
 
 function detect_wheel_spinning(e, rawSkills, currStepCount){
-	
-	updateSkillLevelsAttempts(e, rawSkills, currStepCount);
 
 	for (var skill in skillLevelsAttempts) {
 		if ((skillLevelsAttempts[skill][0] >= 10) && (skillLevelsAttempts[skill][1] < mastery_threshold)){
@@ -253,6 +249,12 @@ function receive_transaction( e ){
 		}
 		else{
 			stepCounter[currStep] = 1;
+		}
+
+		//update skill attempts
+		for (var i in currSkills){
+			var thisSkill = currSkills[i];
+			updateSkillLevelsAttempts(e, onboardSkills, thisSkill, stepCounter[currStep]);
 		}
 
 		//########################

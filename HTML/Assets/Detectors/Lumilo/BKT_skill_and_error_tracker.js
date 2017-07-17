@@ -267,16 +267,17 @@ function receive_transaction( e ){
 		}
 
 
+		//keep track of num attempts on each step
+		if(currStep in stepCounter){
+			stepCounter[currStep] += 1;
+		}
+		else{
+			stepCounter[currStep] = 1;
+		}
+		
+
 		for (var i in currSkills){
 			var skill = currSkills[i];
-
-			//keep track of num attempts on each step
-			if(currStep in stepCounter){
-				stepCounter[currStep] += 1;
-			}
-			else{
-				stepCounter[currStep] = 1;
-			}
 
 			//
 			//BKT
