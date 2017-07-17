@@ -20,6 +20,7 @@ var mailer;
 // (initialize these at the bottom of this file, inside of self.onmessage)
 var skillLevelsAttemptsErrors;
 var onboardSkills;
+var outputValue;
 
 //declare and/or initialize any other custom global variables for this detector here...
 var stepCounter = {};
@@ -80,21 +81,79 @@ function updateSkillLevelsAttemptsErrors(e, skill, currStepCount){
 	}
 }
 
-function format_areas_of_struggle_data(e, skill, cleaned_skill_name){
+// function format_areas_of_struggle_data(e, skill, cleaned_skill_name){
+// 	var return_string = "";
+
+// 	if (skillLevelsAttemptsErrors.hasOwnProperty(skill)){
+
+// 		var currSkillName = cleaned_skill_name;
+// 		var currSkillAttemptCount = String(skillLevelsAttemptsErrors[skill][0]);
+// 		var currSkillLevel = String(skillLevelsAttemptsErrors[skill][1]);
+// 		var currSkillErrorHistory = skillLevelsAttemptsErrors[skill][2].join("@");
+
+// 		return_string += currSkillName + "," + currSkillAttemptCount + "," + currSkillErrorHistory + "," + currSkillLevel;
+// 	}
+
+// 	return return_string;
+// }
+
+
+function format_areas_of_struggle_data(e){
 	var return_string = "";
 
-	if (skillLevelsAttemptsErrors.hasOwnProperty(skill)){
+	//sorting
+	var skillLevelsAttemptsErrorsSorted = Object.keys(skillLevelsAttemptsErrors).map(function(key) {
+	    return [key, skillLevelsAttemptsErrors[key][1]];
+	});
 
+	// Sort the array based on the second element
+	skillLevelsAttemptsErrorsSorted.sort(function(first, second) {
+	    return first[1] - second[1];
+	});
+
+	skillLevelsAttemptsErrorsSorted = skillLevelsAttemptsErrorsSorted.map(function(x) {
+	    return x[0];
+	});
+
+	console.log("sorted skills: " + JSON.stringify(skillLevelsAttemptsErrorsSorted));
+
+
+	for (skillIndex in skillLevelsAttemptsErrorsSorted){
+		var skill = skillLevelsAttemptsErrorsSorted[skillIndex];
+		var cleaned_skill_name = skill.split("/");    
+		cleaned_skill_name.pop();
+		cleaned_skill_name = cleaned_skill_name.join("/").replaceAll("\\_", " "); 
 		var currSkillName = cleaned_skill_name;
+
 		var currSkillAttemptCount = String(skillLevelsAttemptsErrors[skill][0]);
 		var currSkillLevel = String(skillLevelsAttemptsErrors[skill][1]);
 		var currSkillErrorHistory = skillLevelsAttemptsErrors[skill][2].join("@");
 
+		if (return_string!="")
+		{
+			return_string += ";"
+		}
+		else{
+			return_string += "!!!!!!!!!!";
+		}
 		return_string += currSkillName + "," + currSkillAttemptCount + "," + currSkillErrorHistory + "," + currSkillLevel;
 	}
 
+	return_string += "!!!!!!!!!!";
+
+	// if (skillLevelsAttemptsErrors.hasOwnProperty(skill)){
+
+	// 	var currSkillName = cleaned_skill_name;
+	// 	var currSkillAttemptCount = String(skillLevelsAttemptsErrors[skill][0]);
+	// 	var currSkillLevel = String(skillLevelsAttemptsErrors[skill][1]);
+	// 	var currSkillErrorHistory = skillLevelsAttemptsErrors[skill][2].join("@");
+
+	// 	return_string += currSkillName + "," + currSkillAttemptCount + "," + currSkillErrorHistory + "," + currSkillLevel;
+	// }
+
 	return return_string;
 }
+
 
 //
 //###############################
@@ -251,34 +310,21 @@ function receive_transaction( e ){
 			}
 		}
 
-		//update skill information for all skills, send each skill update
+		//update skill information for all skills
 		for (var i in currSkills){
 			var skill = currSkills[i];
-			var cleaned_skill_name = skill.split("/");    
-			cleaned_skill_name.pop();
-			cleaned_skill_name = cleaned_skill_name.join("/").replaceAll("\\_", " "); 
-
 			console.log(skill);
 			updateSkillLevelsAttemptsErrors(e, skill, stepCounter[currStep]);
 
 			skillLevelsAttemptsErrors[skill][2].shift();
 			skillLevelsAttemptsErrors[skill][2].push(transitionError);
-
-			detector_output.name = "SKILL_UPDATE_" + cleaned_skill_name;
-			detector_output.value = format_areas_of_struggle_data(e, skill, cleaned_skill_name);
-			detector_output.history = "";
-			detector_output.time = new Date();
-			detector_output.transaction_id = e.data.transaction_id;
-			mailer.postMessage(detector_output);
-			postMessage(detector_output);
-			console.log("output_data = ", detector_output);
-
 		}
 
-		//also update this variable, for initialization of detector
+		outputValue = format_areas_of_struggle_data(e)
+
 		detector_output.name = variableName;
 		detector_output.value = "0, none";
-		detector_output.history = JSON.stringify([skillLevelsAttemptsErrors, onboardSkills]);
+		detector_output.history = JSON.stringify([skillLevelsAttemptsErrors, onboardSkills, outputValue]);
 		detector_output.time = new Date();
 		detector_output.transaction_id = e.data.transaction_id;
 		mailer.postMessage(detector_output);
@@ -334,6 +380,7 @@ self.onmessage = function ( e ) {
 			//
 			skillLevelsAttemptsErrors = {};
 			onboardSkills = {};
+			outputValue = "";
 		}
 		else{
 			//if the detector history is not empty, you can access it via:
@@ -344,6 +391,7 @@ self.onmessage = function ( e ) {
 			var all_history = JSON.parse(detector_output.history);
 			skillLevelsAttemptsErrors = all_history[0];
 			onboardSkills = all_history[1];
+			outputValue = all_history[2];
 
 		}
 
