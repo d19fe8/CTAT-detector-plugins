@@ -248,12 +248,20 @@ function receive_transaction( e ){
 					prevEq = reinsertParentheses(e.data.context.problem_name.replaceAll(" ", " \+ ").replaceAll("eq", " \= ").replaceAll("\\+", " \+ "));
 				}
 
+				if (e.data.tutor_data.selection.includes("solveLeft")){
+					currLeft = "`" + currLeft + "~";
+				}
+				if (e.data.tutor_data.selection.includes("solveRight")){
+					currRight = "`" + currRight + "~";
+				}
+
 				//needs to be expanded...
 				currError = currLeft + " = " + currRight;
 				
 				transitionError = prevEq + " \\n " + currError;
 
 				console.log("TRANSITION_ERROR: " + transitionError);
+			
 			}
 
 			if (currLeftCorrect==1 && currRightCorrect==1){
@@ -317,8 +325,11 @@ function receive_transaction( e ){
 			console.log(skill);
 			updateSkillLevelsAttemptsErrors(e, skill, stepCounter[currStep]);
 
-			skillLevelsAttemptsErrors[skill][2].shift();
-			skillLevelsAttemptsErrors[skill][2].push(transitionError);
+			if(e.data.tool_data.selection.includes("solve") && e.data.tutor_data.selection.includes(String(currRow)) && e.data.tutor_data.action_evaluation.toLowerCase() == "incorrect"){
+				skillLevelsAttemptsErrors[skill][2].shift();
+				skillLevelsAttemptsErrors[skill][2].push(transitionError);
+
+			}
 		}
 
 		outputValue = format_areas_of_struggle_data(e)

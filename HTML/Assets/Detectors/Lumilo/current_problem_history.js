@@ -37,6 +37,7 @@ var runningSolution = "";
 var solutionStages = "";
 var runningSolutionMinusCurrentLine = "";
 var stepCounter = {};
+var usedHint = {}; //for each step, track whether a student has used a hint on this step
 //
 //
 //
@@ -90,6 +91,15 @@ function receive_transaction( e ){
 			stepCounter[currStep] = 1;
 		}
 
+		if(e.data.tutor_data.action_evaluation.toLowerCase()=="hint"){
+			if(currStep in usedHint){
+				usedHint[currStep] += 1;
+			}
+			else{
+				usedHint[currStep] = 1;	
+			}
+		}
+
 
 		//
 		if (e.data.tool_data.selection.includes("solve")){
@@ -113,8 +123,11 @@ function receive_transaction( e ){
 					currLeft = "[" + currLeft + "]";
 				}
 				else{
-					if(stepCounter[currStep] != 1){
-						currLeft = "[*] " + currLeft;
+					if(currStep in usedHint){
+						currLeft = "`" + String(usedHint[currStep]) + "~ " + currLeft;
+					}
+					else{
+						currLeft = "          " + currLeft;
 					}
 				}
 			}
@@ -124,8 +137,11 @@ function receive_transaction( e ){
 					currRight = "[" + currRight + "]";
 				}
 				else{
-					if(stepCounter[currStep] != 1){
-						currRight = currRight + " [*]";
+					if(currStep in usedHint){
+						currRight = currRight + " `" + String(usedHint[currStep]) + "~";
+					}
+					else{
+						currRight = currRight + "          ";
 					}
 				}
 			}
