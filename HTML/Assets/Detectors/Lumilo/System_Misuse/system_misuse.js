@@ -33,7 +33,7 @@ var help_variables = {"lastAction": "null",
 					  "lastHintLength": "",
 					  "lastSenseOfWhatToDo": false
 					 };
-var elaborationString;
+var elaborationString = " ";
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 10; //arbitrary: need to tune

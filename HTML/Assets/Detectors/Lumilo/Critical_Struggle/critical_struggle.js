@@ -26,7 +26,7 @@ var stepCounter = {};
 
 //declare and/or initialize any other custom global variables for this detector here...
 var initTime;
-var elaborationString;
+var elaborationString = " ";
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 6;

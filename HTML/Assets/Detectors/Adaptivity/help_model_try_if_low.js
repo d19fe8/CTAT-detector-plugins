@@ -1,7 +1,7 @@
 //detector template
 
 //add output variable name below
-var variableName = "help_model_try_if_low"
+var variableName = "hint_use"
 
 //initializations (do not touch)
 var detector_output = {name: variableName,
@@ -158,33 +158,33 @@ function evaluateAction(e){
 		if (isDeliberate(e)){
 			console.log("isDeliberate")
 			if (isLowSkillStep_Some(e) && !lastActionIsError(e)){ //possible modifications...unless wheel-spinning? ... or even closer to Ido's would be to get rid of the "unless last step was error" qualification?
-				return("not acceptable/asked hint on low skill step");
+				return("asked hint on low skill step");
 			}
 			else{
 				if (!seenAllHintLevels(e) &&
 					(!isFamiliar(e) 
 					|| (lastActionIsError(e) && lastActionUnclearFix(e)) 
 					|| (lastActionIsHint(e) && !hintIsHelpful(e))) ){
-					return "preferred/ask hint";
+					return "ask hint";
 				}
 				else if ( (isFamiliar(e) && !senseOfWhatToDo(e) ) 
 						|| (lastActionIsHint(e)) ){
-					return "acceptable/ask hint";
+					return "ask hint";
 				}
 				else{
-					return "not acceptable/hint abuse";
+					return "hint abuse";
 				}
 			}
 		}
 		else{
 		console.log("not deliberate")
-			return "not acceptable/hint abuse";
+			return "hint abuse";
 		}
 
 	}
 	else{
 		if (isLowSkillStep_Some(e) && !lastActionIsError(e)){ //possible modifications...unless wheel-spinning? ... or even closer to Ido's would be to get rid of the "unless last step was error" qualification?
-				return("preferred/try step on low skill step");
+				return("try step on low skill step");
 			}
 		else{
 			if (isDeliberate(e)){
@@ -199,19 +199,19 @@ function evaluateAction(e){
 					return "preferred";
 				}
 				else if (isCorrect(e)){
-					return "acceptable/try step";
+					return "try step";
 				}
 				else if (seenAllHintLevels(e)){
 					if (lastActionIsError(e) && lastActionUnclearFix(e)){
-						return "ask teacher for help/try step";
+						return "ask teacher for help";
 					}
 				}
 				else{
-					return "not acceptable/hint avoidance";
+					return "hint avoidance";
 				}
 			}
 			else{
-				return "not acceptable/not deliberate";
+				return "not deliberate";
 			}
 		}
 	}

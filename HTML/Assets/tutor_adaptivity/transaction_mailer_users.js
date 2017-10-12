@@ -6,10 +6,10 @@ TransactionMailerUsers =
     mailerURL: "mail-worker.js",
     mailer: null,
     mailerPort: null,
-    scripts: ["Detectors/Adaptivity/currentAttemptCount.js",
-    "Detectors/Adaptivity/idle.js",
-    "Detectors/Adaptivity/help_model_try_if_low.js",
-    "Detectors/Adaptivity/tutor_ear.js"],
+    scripts: ["Detectors/Adaptivity/unproductive_struggle.js",
+    "Detectors/Adaptivity/BKT.js",
+    "Detectors/Adaptivity/help_model_try_if_low.js"],
+    //"Detectors/Adaptivity/tutor_ear.js"],
     active: []
 };
 

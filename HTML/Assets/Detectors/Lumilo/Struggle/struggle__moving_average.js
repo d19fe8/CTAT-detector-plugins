@@ -34,7 +34,7 @@ var help_variables = {"lastAction": "null",
 					  "lastSenseOfWhatToDo": false
 					 };
 var attemptCorrect;
-var elaborationString;
+var elaborationString = " ";
 //
 //[optional] single out TUNABLE PARAMETERS below
 var windowSize = 10;
