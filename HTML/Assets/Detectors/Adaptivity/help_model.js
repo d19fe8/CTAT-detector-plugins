@@ -1,7 +1,7 @@
 //detector template
 
 //add output variable name below
-var variableName = "help_model"
+var variableName = "help_model" 
 
 //initializations (do not touch)
 var detector_output = {name: variableName,
