@@ -85,11 +85,38 @@ function receive_transaction( e ){
 	}
 }
 
+var numRowsReceived = 0;
+var numRowsProcessed = 0;
 
 self.onmessage = function ( e ) {
     console.log(variableName, " self.onmessage:", e, e.data, (e.data?e.data.commmand:null), (e.data?e.data.transaction:null), e.ports);
     switch( e.data.command )
     {
+    case "offlineMode":
+    	//console.log(event.data.message);
+    	offlineMode = true;
+    	numRowsReceived++;
+    	receive_transaction({data: event.data.message});
+    	numRowsProcessed++;
+    break;
+    case "offlineNewProblem":
+    	console.log("new problem!");
+    	initTime = "";
+    break;
+    case "offlineNewStudent":
+    	console.log("new student!");
+    	detector_output.category = event.data.studentId;
+    	detector_output.history = "";
+		detector_output.value = "0, > 0 s";
+		initTime = "";
+    break;
+    case "endOfOfflineMessages":
+    	setInterval(function() {
+    		if (numRowsReceived === numRowsProcessed) {
+    			postMessage("readyToTerminate");
+    		}
+    	},200);
+    break;
     case "connectMailer":
 		mailer = e.ports[0];
 		mailer.onmessage = receive_transaction;
