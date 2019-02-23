@@ -20,7 +20,7 @@ TransactionMailerUsers =
 var init = "";
 
 
-TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authToken, scriptsInitzer)
+TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authToken, scriptsInitzer, xApiKeyHeader)
 {
 
     console.log("TransactionMailerUsers.create(): at entry, init", init );
@@ -33,10 +33,18 @@ TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authTo
         parent.parent.initWorker.port.postMessage(["newDetectorResult", e.data]);
     }, false);
 
-    TransactionMailerUsers.mailer.postMessage({ command: "process_transactions_url", "process_transactions_url": txDestURL, "process_detectors_url": scriptsDestURL, "authenticity_token": authToken});
     TransactionMailerUsers.process_transactions_url = txDestURL;
     TransactionMailerUsers.authenticity_token = authToken;
     TransactionMailerUsers.process_detectors_url = scriptsDestURL;
+    TransactionMailerUsers.x_api_key_header = (xApiKeyHeader? xApiKeyHeader : "");
+
+    TransactionMailerUsers.mailer.postMessage({
+        command: "process_transactions_url",
+        process_transactions_url: TransactionMailerUsers.process_transactions_url,
+        process_detectors_url: TransactionMailerUsers.process_detectors_url,
+        x_api_key_header: TransactionMailerUsers.x_api_key_header,
+        authenticity_token: TransactionMailerUsers.authenticity_token
+    });
 
     var channel = new MessageChannel();
     TransactionMailerUsers.mailer.postMessage(

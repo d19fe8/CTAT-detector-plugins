@@ -13,16 +13,24 @@ TransactionMailerUsers =
     active: []
 };
 
-TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authToken, scriptsInitzer)
+TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authToken, scriptsInitzer, xApiKeyHeader)
 {
     console.log("TransactionMailerUsers.create(): at entry, scriptsInitzer ", scriptsInitzer );
 
     TransactionMailerUsers.mailer = new Worker(path+'/'+TransactionMailerUsers.mailerURL);
     
-    TransactionMailerUsers.mailer.postMessage({ command: "process_transactions_url", "process_transactions_url": txDestURL, "process_detectors_url": scriptsDestURL, "authenticity_token": authToken});
     TransactionMailerUsers.process_transactions_url = txDestURL;
     TransactionMailerUsers.authenticity_token = authToken;
     TransactionMailerUsers.process_detectors_url = scriptsDestURL;
+    TransactionMailerUsers.x_api_key_header = (xApiKeyHeader? xApiKeyHeader : "");
+
+    TransactionMailerUsers.mailer.postMessage({
+        command: "process_transactions_url",
+        process_transactions_url: TransactionMailerUsers.process_transactions_url,
+        process_detectors_url: TransactionMailerUsers.process_detectors_url,
+        x_api_key_header: TransactionMailerUsers.x_api_key_header,
+        authenticity_token: TransactionMailerUsers.authenticity_token
+    });
 
     var channel = new MessageChannel();
     TransactionMailerUsers.mailer.postMessage(

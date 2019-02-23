@@ -1,5 +1,6 @@
 var process_transactions_url = null;
 var process_detectors_url = null;
+var x_api_key_header = null;
 var authenticity_token = "";
 var txAssembler = null;
 var detectors = [];
@@ -36,6 +37,7 @@ self.onmessage = function ( e ) {
 	case "process_transactions_url":
 		process_transactions_url = e.data.process_transactions_url;
 		process_detectors_url = e.data.process_detectors_url;
+		x_api_key_header = e.data.x_api_key_header;
 		authenticity_token = e.data.authenticity_token;
 		break;
 	case "connectTransactionAssembler":
@@ -74,6 +76,7 @@ setInterval(function()
 		//xhttp.send( JSON.stringify(trans) );
 		xhttp.open("POST", process_transactions_url, true);  // fake_server.php
 		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.setRequestHeader("x-api-key", x_api_key_header);
 		xhttp.send( JSON.stringify(trans) );
 	}
 	else{
@@ -99,6 +102,7 @@ setInterval(function()
 		//xhttp.send( JSON.stringify(detect) );
 		xhttp.open("POST", process_detectors_url, true);  // fake_server.php
 		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.setRequestHeader("x-api-key", x_api_key_header);
 		xhttp.send( JSON.stringify(detect) );
 	}
 	else{
